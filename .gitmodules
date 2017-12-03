@@ -1,3 +1,6 @@
 [submodule "Kaleidoscope-Qukeys"]
 	path = Kaleidoscope-Qukeys
 	url = https://github.com/gedankenlab/Kaleidoscope-Qukeys.git
+[submodule "Kaleidoscope-KeyAddr"]
+	path = Kaleidoscope-KeyAddr
+	url = https://github.com/gedankenlab/Kaleidoscope-KeyAddr.git

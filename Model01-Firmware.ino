@@ -71,6 +71,7 @@
   */
 
 enum { MACRO_VERSION_INFO,
+       MACRO_TOGGLE_QUKEYS,
        MACRO_ANY
      };
 
@@ -125,7 +126,7 @@ enum { QWERTY, NUMPAD, FUNCTION }; // layers
  */
 // *INDENT-OFF*
 
-const Key keymaps[][ROWS][COLS] PROGMEM = {
+KEYMAPS(
 
   [QWERTY] = KEYMAP_STACKED
   (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
@@ -135,7 +136,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
    ShiftToLayer(FUNCTION),
 
-   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
+   M(MACRO_TOGGLE_QUKEYS),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
    Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                   Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
    Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
@@ -173,7 +174,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___, ___, Key_Enter, ___,
    ___)
 
-};
+) // KEYMAPS(
 
 /* Re-enable astyle's indent enforcement */
 // *INDENT-ON*
@@ -225,6 +226,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_VERSION_INFO:
     versionInfoMacro(keyState);
+    break;
+
+  case MACRO_TOGGLE_QUKEYS:
+    Qukeys.toggle();
     break;
 
   case MACRO_ANY:
@@ -301,6 +306,9 @@ void setup() {
     // The stalker effect lights up the keys you've pressed recently
     &StalkerEffect,
 
+    // The Qukeys plugin allows overloading keys
+    &Qukeys,
+
     // The numpad plugin is responsible for lighting up the 'numpad' mode
     // with a custom LED effect
     &NumPad,
@@ -311,6 +319,16 @@ void setup() {
     // The MouseKeys plugin lets you add keys to your keymap which move the mouse.
     &MouseKeys
   );
+
+  // Definition of qukeys
+  QUKEYS(
+    kaleidoscope::Qukey(0, 2, 1, Key_LeftGui),      // A/cmd
+    kaleidoscope::Qukey(0, 2, 2, Key_LeftAlt),      // S/alt
+    kaleidoscope::Qukey(0, 2, 3, Key_LeftControl),  // D/ctrl
+    kaleidoscope::Qukey(0, 2, 4, Key_LeftShift)     // F/shift
+  )
+  // Set qukeys time limit to 200ms
+  Qukeys.setTimeout(200);
 
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer

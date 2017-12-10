@@ -54,10 +54,10 @@
 #include "Kaleidoscope-LED-Stalker.h"
 
 // Support for an LED mode that prints the keys you press in letters 4px high
-#include "Kaleidoscope-LED-AlphaSquare.h"
+//#include "Kaleidoscope-LED-AlphaSquare.h"
 
 // Support for Keyboardio's internal keyboard testing mode
-#include "Kaleidoscope-Model01-TestMode.h"
+//#include "Kaleidoscope-Model01-TestMode.h"
 
 
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
@@ -278,7 +278,7 @@ void setup() {
     &BootGreetingEffect,
 
     // The hardware test mode, which can be invoked by tapping Prog, LED and the left Fn button at the same time.
-    &TestMode,
+    //&TestMode,
 
     // LEDControl provides support for other LED modes
     &LEDControl,
@@ -306,7 +306,7 @@ void setup() {
 
     // The AlphaSquare effect prints each character you type, using your
     // keyboard's LEDs as a display
-    &AlphaSquareEffect,
+    //&AlphaSquareEffect,
 
     // The stalker effect lights up the keys you've pressed recently
     &StalkerEffect,
@@ -339,7 +339,7 @@ void setup() {
   NumPad.numPadLayer = NUMPAD;
 
   // We configure the AlphaSquare effect to use RED letters
-  AlphaSquare.color = { 255, 0, 0 };
+  //AlphaSquare.color = { 255, 0, 0 };
 
   // We set the brightness of the rainbow effects to 150 (on a scale of 0-255)
   // This draws more than 500mA, but looks much nicer than a dimmer effect

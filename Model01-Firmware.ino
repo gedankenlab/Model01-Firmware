@@ -7,119 +7,116 @@
 #endif
 
 
-/**
- * These #include directives pull in the Kaleidoscope firmware core,
- * as well as the Kaleidoscope plugins we use in the Model 01's firmware
- */
-
-
 // The Kaleidoscope core
-#include "Kaleidoscope.h"
-
-// Support for keys that move the mouse
-#include "Kaleidoscope-MouseKeys.h"
-
-// Support for macros
-#include "Kaleidoscope-Macros.h"
-
-// Support for controlling the keyboard's LEDs
-#include "Kaleidoscope-LEDControl.h"
-
-// Support for "Numpad" mode, which is mostly just the Numpad specific LED mode
-#include "Kaleidoscope-NumPad.h"
-
-// Support for an "LED off mode"
-#include "LED-Off.h"
-
-// Support for the "Boot greeting" effect, which pulses the 'LED' button for 10s
-// when the keyboard is connected to a computer (or that computer is powered on)
-#include "Kaleidoscope-LEDEffect-BootGreeting.h"
-
-// Support for LED modes that set all LEDs to a single color
-#include "Kaleidoscope-LEDEffect-SolidColor.h"
-
-// Support for an LED mode that makes all the LEDs 'breathe'
-#include "Kaleidoscope-LEDEffect-Breathe.h"
-
-// Support for an LED mode that makes a red pixel chase a blue pixel across the keyboard
-#include "Kaleidoscope-LEDEffect-Chase.h"
-
-// Support for LED modes that pulse the keyboard's LED in a rainbow pattern
-#include "Kaleidoscope-LEDEffect-Rainbow.h"
-
-// Support for an LED mode that lights up the keys as you press them
-#include "Kaleidoscope-LED-Stalker.h"
-
-// Support for an LED mode that prints the keys you press in letters 4px high
-#include "Kaleidoscope-LED-AlphaSquare.h"
-
-// Support for Keyboardio's internal keyboard testing mode
-#include "Kaleidoscope-Model01-TestMode.h"
-
-// Support for host power management (suspend & wakeup)
-#include "Kaleidoscope-HostPowerManagement.h"
+#include "Kaleidoscope-Core.h"
+#include KALEIDOSCOPE_HARDWARE_H
 
 
-/** This 'enum' is a list of all the macros used by the Model 01's firmware
-  * The names aren't particularly important. What is important is that each
-  * is unique.
-  *
-  * These are the names of your macros. They'll be used in two places.
-  * The first is in your keymap definitions. There, you'll use the syntax
-  * `M(MACRO_NAME)` to mark a specific keymap position as triggering `MACRO_NAME`
-  *
-  * The second usage is in the 'switch' statement in the `macroAction` function.
-  * That switch statement actually runs the code associated with a macro when
-  * a macro key is pressed.
-  */
+namespace kaleidoscope {
 
-enum { MACRO_VERSION_INFO,
-       MACRO_ANY
-     };
+#define TOTAL_KEYS 64 //from KALEIDOSCOPE_HARDWARE_H
+
+// --------------------------------------------------------------------------------
+// For mysterious reasons, stringizing requires two levels of indirection
+#define __STRINGIZE(A) #A
+#define STRINGIZE(A) __STRINGIZE(A)
+
+#define ELEMENTS(ARRAY) (sizeof(ARRAY)/sizeof(ARRAY[0]))
+
+// This defines a macro that ensures the right number of keys are defined for a full layer
+// (for a PROGMEM layer, obviously)
+#define PROGMEM_LAYER(LAYER_NAME, ...)                                           \
+  constexpr PROGMEM Key LAYER_NAME ## _keys[] = { __VA_ARGS__ };                 \
+  static_assert(ELEMENTS(LAYER_NAME ## _keys) == TOTAL_KEYS,                     \
+                "Error: wrong number of keys defined in layer '" #LAYER_NAME "'" \
+                "; must be exactly " STRINGIZE(TOTAL_KEYS));                     \
+  Layer LAYER_NAME(LAYER_NAME ## _keys);                                         \
+
+// --------------------------------------------------------------------------------
+
+PROGMEM_LAYER(qwerty,
+  ___,   ___,   ___,   ___,   ___,   ___,   ___,   ___,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+);
+
+Layer* layers[] = {
+  &qwerty,
+};
+
+Keymap keymap{layers, sizeof(layers)/sizeof(layers[0])};
+
+// Hardware
+Keyboard keyboard{};
+
+hid::keyboard::Report keyboard_hid_report{};
+
+Main master{keymap, keyboard, keyboard_hid_report};
+
+} // namespace kaleidoscope {
+
+void setup() {
+  kaleidoscope::keyboard.init();
+  kaleidoscope::keyboard_hid_report.init();
+  kaleidoscope::master.init();
+}
+
+void loop() {
+  kaleidoscope::master.run();
+}
 
 
 
-/** The Model 01's key layouts are defined as 'keymaps'. By default, there are three
-  * keymaps: The standard QWERTY keymap, the "Function layer" keymap and the "Numpad"
-  * keymap.
-  *
-  * Each keymap is defined as a list using the 'KEYMAP_STACKED' macro, built
-  * of first the left hand's layout, followed by the right hand's layout.
-  *
-  * Keymaps typically consist mostly of `Key_` definitions. There are many, many keys
-  * defined as part of the USB HID Keyboard specification. You can find the names
-  * (if not yet the explanations) for all the standard `Key_` defintions offered by
-  * Kaleidoscope in these files:
-  *    https://github.com/keyboardio/Kaleidoscope/blob/master/src/key_defs_keyboard.h
-  *    https://github.com/keyboardio/Kaleidoscope/blob/master/src/key_defs_consumerctl.h
-  *    https://github.com/keyboardio/Kaleidoscope/blob/master/src/key_defs_sysctl.h
-  *    https://github.com/keyboardio/Kaleidoscope/blob/master/src/key_defs_keymaps.h
-  *
-  * Additional things that should be documented here include
-  *   using ___ to let keypresses fall through to the previously active layer
-  *   using XXX to mark a keyswitch as 'blocked' on this layer
-  *   using ShiftToLayer() and LockLayer() keys to change the active keymap.
-  *   the special nature of the PROG key
-  *   keeping NUM and FN consistent and accessible on all layers
-  *
-  *
-  * The "keymaps" data structure is a list of the keymaps compiled into the firmware.
-  * The order of keymaps in the list is important, as the ShiftToLayer(#) and LockLayer(#)
-  * macros switch to key layers based on this list.
-  *
-  *
 
-  * A key defined as 'ShiftToLayer(FUNCTION)' will switch to FUNCTION while held.
-  * Similarly, a key defined as 'LockLayer(NUMPAD)' will switch to NUMPAD when tapped.
-  */
 
-/**
-  * Layers are "0-indexed" -- That is the first one is layer 0. The second one is layer 1.
-  * The third one is layer 2.
-  * This 'enum' lets us use names like QWERTY, FUNCTION, and NUMPAD in place of
-  * the numbers 0, 1 and 2.
-  *
-  */
+
+
+
+
+
+
+
+
+
+
+constexpr PROGMEM Key base_layer_keys[TOTAL_KEYS] = {
+  ___,   ___,   ___,   ___,   ___,   ___,   ___,   ___,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+  Key_A, Key_B, Key_C, Key_D, Key_E, Key_F, Key_G, Key_H,
+};
+static_assert(sizeof(base_layer_keys)/sizeof(base_layer_keys[0]) == TOTAL_KEYS,
+              "Error: wrong number of keys defined in " #base_layer_keys " -- "
+              "Must be exactly " #TOTAL_KEYS);
+
+Layer base_layer(base_layer_keys);
+
+Layer* layers[] = {
+  &base_layer,
+};
+
+Keymap keymap(layers, sizeof(layers)/sizeof(layers[0]));
+
+
+
+
+
+
+
+
+
+
 
 enum { QWERTY, NUMPAD, FUNCTION }; // layers
 
@@ -127,6 +124,40 @@ enum { QWERTY, NUMPAD, FUNCTION }; // layers
  *   so we can make the keymaps actually resemble the physical key layout better
  */
 // *INDENT-OFF*
+
+//Maybe all these layers need to be declared together?
+PROGMEM Layer layer_qwerty = {
+  ___, Key_1, Key_2, Key_3,
+};
+
+PROGMEM Layer layer_blue = {};
+
+PROGMEM Layer layer_red = {};
+
+// layers[] gets constructed by the pre-build script
+PROGMEM Layer layers[] = {
+  [0] = (Layer){___, Key_1, Key_2, Key_3, ...},
+  [1] = (Layer){___, Key_A, Key_B, Key_C, ...},
+  [2] = (Layer){___, Key_X, Key_Y, Key_Z, ...},
+  [3] = (Layer){___, Key_7, Key_8, Key_9, ...},
+};
+
+// layer_count gets determined by the pre-build script, which also constructs the layers
+byte layer_count = 4;
+
+// If the keymap pointer array isn't in progmem, it could be re-ordered
+Keymap keymap(layer_count, layers);
+// ...but maybe this is better:
+Keymap keymap;
+for (byte i = 0; i < layer_count; ++i) {
+  keymap.add(layers[i]);
+}
+
+// Will this work?
+Key& operator[](Key table[], KeyAddr k) {
+  return table[k.addr()];
+}
+
 
 const Key keymaps[][ROWS][COLS] PROGMEM = {
 
@@ -379,4 +410,33 @@ void setup() {
 
 void loop() {
   Kaleidoscope.loop();
+}
+
+
+// TODO: Test out replacing setup() & loop() with main(). This lets us get rid of (nearly)
+// all the ugly global state issues, and enforce dependency declarations. The one minor
+// drawback is that it means (I think) the RAM usage will be under-reported in the build,
+// but it should be possible to fix that by declaring all local variables in main()
+// static. If that doesn't work out, or becomes problematic, it may be possible to
+// dispense with either setup() or loop() (but check on serialEventRun() and see if that
+// matters at all). Probably easier to use setup(), and add our own infinite loop therein.
+int main() {
+  // Initialise Arduino functionality.
+  init();
+
+  // Attach USB for applicable processors.
+#if defined(USBCON)
+  USBDevice.attach();
+#endif
+
+  setup();  // Call Arduino standard setup function
+
+  while (true) {
+    loop(); // Call Arduino standard loop function.
+
+    // Process the serial libaries event queue.
+    if (serialEventRun) serialEventRun();
+  }
+  // Execution should never reach this point.
+  return 0x00;
 }

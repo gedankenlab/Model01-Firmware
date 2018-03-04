@@ -12,7 +12,7 @@
 enum { QWERTY, NUMPAD, FUNCTION }; // layers
 
 
-const Key keymaps[][TOTAL_KEYS] PROGMEM = {
+const PROGMEM Key keymaps[][kaleidoscope::hardware::total_keys] = {
 
   [QWERTY] = KEYMAP_STACKED
   (

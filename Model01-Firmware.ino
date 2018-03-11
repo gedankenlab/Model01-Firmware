@@ -73,9 +73,13 @@
   * a macro key is pressed.
   */
 
-enum { MACRO_VERSION_INFO,
-       MACRO_ANY
-     };
+enum {
+  MACRO_VERSION_INFO,
+  MACRO_ANY,
+  COMPOSE_AA,
+  COMPOSE_AE,
+  COMPOSE_OE,
+};
 
 
 
@@ -121,7 +125,7 @@ enum { MACRO_VERSION_INFO,
   *
   */
 
-enum { QWERTY, NUMPAD, FUNCTION }; // layers
+enum { QWERTY, BOKMAL, NUMPAD, FUNCTION }; // layers
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -138,12 +142,28 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
    ShiftToLayer(FUNCTION),
 
-   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
+   LockLayer(BOKMAL),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
    Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                   Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
    Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
+   Key_RightShift, Key_LeftAlt, Key_Spacebar, ShiftToLayer(BOKMAL),
    ShiftToLayer(FUNCTION)),
+
+
+  [BOKMAL] =  KEYMAP_STACKED
+  (___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___,
+   ___,
+
+   LockLayer(BOKMAL), ___, ___, ___, ___,           ___,           ___,
+   ___,               ___, ___, ___, ___,           M(COMPOSE_AA), ___,
+                      ___, ___, ___, M(COMPOSE_OE), M(COMPOSE_AE), ___,
+   ___,               ___, ___, ___, ___,           ___,           ___,
+   ___, ___, ___, ___,
+   ___),
 
 
   [NUMPAD] =  KEYMAP_STACKED
@@ -160,6 +180,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___,                    ___, Key_Keypad0, Key_KeypadDot, Key_KeypadMultiply, Key_KeypadDivide,   Key_Enter,
    ___, ___, ___, ___,
    ___),
+
 
   [FUNCTION] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
@@ -210,6 +231,32 @@ static void anyKeyMacro(uint8_t keyState) {
     kaleidoscope::hid::pressKey(lastKey);
 }
 
+void composeTapKey(Key key, bool shift_state = false) {
+  if (shift_state && key.keyCode >= Key_A.keyCode && key.keyCode <= Key_Z.keyCode) {
+    kaleidoscope::hid::pressKey(Key_LeftShift);
+  }
+  kaleidoscope::hid::pressKey(key);
+  kaleidoscope::hid::sendKeyboardReport();
+  kaleidoscope::hid::releaseKey(key);
+  kaleidoscope::hid::sendKeyboardReport();
+}
+
+void compose(Key a, Key b, bool shift_both = false) {
+  bool lshift = kaleidoscope::hid::wasModifierKeyActive(Key_LeftShift);
+  bool rshift = kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
+
+  kaleidoscope::hid::releaseKey(Key_LeftShift);
+  kaleidoscope::hid::releaseKey(Key_RightShift);
+
+  composeTapKey(Key_F13);
+  composeTapKey(a, shift_both && (lshift || rshift));
+  composeTapKey(b, lshift || rshift);
+
+  if (lshift)
+    kaleidoscope::hid::pressKey(Key_LeftShift);
+  if (rshift)
+    kaleidoscope::hid::pressKey(Key_RightShift);
+}
 
 /** macroAction dispatches keymap events that are tied to a macro
     to that macro. It takes two uint8_t parameters.
@@ -226,13 +273,31 @@ static void anyKeyMacro(uint8_t keyState) {
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   switch (macroIndex) {
 
-  case MACRO_VERSION_INFO:
-    versionInfoMacro(keyState);
-    break;
+    case MACRO_VERSION_INFO:
+      versionInfoMacro(keyState);
+      break;
 
-  case MACRO_ANY:
-    anyKeyMacro(keyState);
-    break;
+    case MACRO_ANY:
+      anyKeyMacro(keyState);
+      break;
+
+    case COMPOSE_AA:
+      if (keyToggledOn(keyState)) {
+        compose(Key_O, Key_A);
+      }
+      break;
+
+    case COMPOSE_AE:
+      if (keyToggledOn(keyState)) {
+        compose(Key_A, Key_E, true);
+      }
+      break;
+
+    case COMPOSE_OE:
+      if (keyToggledOn(keyState)) {
+        compose(Key_Slash, Key_O, true);
+      }
+      break;
   }
   return MACRO_NONE;
 }

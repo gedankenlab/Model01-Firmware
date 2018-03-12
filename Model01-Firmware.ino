@@ -13,7 +13,7 @@
 // using namespace kaleidoscope;
 namespace kaleidoscope {
 
-const Key qwerty_keys[] = KEYMAP_STACKED(
+const PROGMEM Key qwerty_keys[] = KEYMAP_STACKED(
       ___,          Key_1, Key_2, Key_3, Key_4, Key_5, XXX,
       Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T,
       Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G, Key_Tab,

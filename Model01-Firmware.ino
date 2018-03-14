@@ -70,12 +70,24 @@ Controller controller {keymap, keyboard, reporter};
 } // namespace kaleidoscope {
 
 
+//#define REPORT_CYCLE_TIME_AVERAGES
+
+#if defined (REPORT_CYCLE_TIME_AVERAGES)
+#define SERIAL_DEBUG
+#endif
+
 void setup() {
+
+#if defined(SERIAL_DEBUG)
   Serial.begin(9600);
+#endif
+
   kaleidoscope::controller.init();
 }
 
 void loop() {
+
+#if defined(REPORT_CYCLE_TIME_AVERAGES)
   static uint16_t counter{0};
   static uint32_t start_time = micros();
   if (counter == 2048) {
@@ -87,8 +99,8 @@ void loop() {
     counter = 0;
     start_time = micros();
   }
+  ++counter;
+#endif
 
   kaleidoscope::controller.run();
-
-  ++counter;
 }

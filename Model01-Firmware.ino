@@ -70,7 +70,20 @@ Controller controller {keymap, keyboard, reporter};
 } // namespace kaleidoscope {
 
 
-//#define REPORT_CYCLE_TIME_AVERAGES
+void reportMeanCycleTime() {
+  static uint8_t counter{0};
+  static uint32_t start_time = micros();
+  if (++counter == 0) {
+    uint32_t interval = micros() - start_time;
+    uint32_t mean_cycle_time = interval / 256;
+    Serial.print(F("mean cycle time: "));
+    Serial.print(mean_cycle_time);
+    Serial.println(F(" µs"));
+    start_time = micros();
+  }
+}
+
+#define REPORT_CYCLE_TIME_AVERAGES
 
 #if defined (REPORT_CYCLE_TIME_AVERAGES)
 #define SERIAL_DEBUG
@@ -88,18 +101,7 @@ void setup() {
 void loop() {
 
 #if defined(REPORT_CYCLE_TIME_AVERAGES)
-  static uint16_t counter{0};
-  static uint32_t start_time = micros();
-  if (counter == 2048) {
-    uint32_t interval = micros() - start_time;
-    uint32_t mean_cycle_time = interval / 2048;
-    Serial.print(F("average cycle time: "));
-    Serial.print(mean_cycle_time);
-    Serial.println(F(" µs"));
-    counter = 0;
-    start_time = micros();
-  }
-  ++counter;
+  reportMeanCycleTime();
 #endif
 
   kaleidoscope::controller.run();

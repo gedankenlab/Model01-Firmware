@@ -70,7 +70,7 @@ Controller controller {keymap, keyboard, reporter};
 } // namespace kaleidoscope {
 
 
-void reportMeanCycleTime() {
+inline void reportMeanCycleTime() {
   static uint8_t counter{0};
   static uint32_t start_time = micros();
   if (++counter == 0) {
@@ -83,7 +83,7 @@ void reportMeanCycleTime() {
   }
 }
 
-#define REPORT_CYCLE_TIME_AVERAGES
+//#define REPORT_CYCLE_TIME_AVERAGES
 
 #if defined (REPORT_CYCLE_TIME_AVERAGES)
 #define SERIAL_DEBUG

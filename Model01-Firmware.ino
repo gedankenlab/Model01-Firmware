@@ -130,7 +130,7 @@ inline void reportMeanCycleTime() {
 #define SERIAL_DEBUG
 #endif
 
-#define SERIAL_DEBUG
+//#define SERIAL_DEBUG
 
 void setup() {
 

@@ -10,6 +10,8 @@
 #include <Kaleidoscope.h>
 #include <Kaleidoscope-Qukeys.h>
 
+//#include <kaleidoscope/Controller.h>
+
 // Maybe it's fine to just have a using directive here instead:
 // using namespace kaleidoscope;
 namespace kaleidoscope {
@@ -108,6 +110,56 @@ bool preKeyboardReportHooks(hid::keyboard::Report& keyboard_report) {
 }
 
 } // namespace hooks {
+
+void testLeds() {
+  // for (byte i{0}; i < 64; ++i) {
+  //   LedAddr l{i};
+  //   keyboard.setLedColor(l, {255, 0, 0});
+  //   delay(100);
+  //   // keyboard.updateLeds();
+  //   // delay(100);
+  //   keyboard.setLedColor(l, {0,0,0});
+  //   // keyboard.updateLeds();
+  //   delay(100);
+  //   // keyboard.setLedColor(l, {0,0,0});
+  //   // delay(10);
+  // }
+  delay(5000);
+  keyboard.testLeds();
+  // delay(1000);
+  // keyboard.setAllLeds({200,250,0});
+  // for (LedAddr l{0}; l < LedAddr{64}; ++l) {
+  //   keyboard.setLedColor(l, {0, 200, 226});
+  //   keyboard.updateLeds();
+  //   delay(100);
+  //   // keyboard.setLedColor(l, {0,0,0});
+  //   // // keyboard.updateLeds();
+  //   // delay(10);
+  // }
+  // // for (byte i{0}; i < 64; ++i) {
+  // //   LedAddr l{i};
+  // //   delay(100);
+  // //   keyboard.setLedColor(l, {0,0,0});
+  // // }
+  // // for (LedAddr l{0}; l < LedAddr{64}; ++l) {
+  // //   delay(100);
+  // //   keyboard.setLedColor(l, {0,0,0});
+  // // }
+  // for (KeyAddr k{cKeyAddr::start}; k < cKeyAddr::end; ++k) {
+  //   // uint32_t foo = micros();
+  //   // byte r = foo & 0xFF; foo >>= 4;
+  //   // byte g = foo & 0xFF; foo >>= 4;
+  //   // byte b = foo & 0xFF;
+  //   // Color color(r, g, b);
+  //   keyboard.setKeyColor(k, {200,100,0});
+  //   keyboard.updateLeds();
+  //   delay(500);
+  //   keyboard.setKeyColor(k, {0,0,0});
+  //   // keyboard.updateLeds();
+  //   delay(50);
+  // }
+}
+
 } // namespace kaleidoscope {
 
 
@@ -130,7 +182,7 @@ inline void reportMeanCycleTime() {
 #define SERIAL_DEBUG
 #endif
 
-//#define SERIAL_DEBUG
+#define SERIAL_DEBUG
 
 void setup() {
 
@@ -139,6 +191,7 @@ void setup() {
 #endif
 
   kaleidoscope::controller.init();
+  kaleidoscope::testLeds();
 }
 
 void loop() {

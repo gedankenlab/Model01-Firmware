@@ -22,6 +22,7 @@ namespace qukeys {
 Qukey qukeys[] = {
   {Key_F, Key_LeftShift},
   {Key_D, Key_LeftControl},
+  {Key_M, Key::Keyboard(0x10, 0b0010)}
 };
 
 byte qukey_count = sizeof(qukeys)/sizeof(qukeys[0]);
@@ -42,7 +43,7 @@ const PROGMEM Key qwerty_keys[] = KEYMAP_STACKED(
     XXX,          Key_6, Key_7, Key_8,     Key_9,      Key_0,         XXX,
                   Key_Y, Key_U, Key_I,     Key_O,      Key_P,         Key_Equals,
     Key_Enter,    Key_H, Key_J, Key_K,     Key_L,      Key_Semicolon, Key_Quote,
-    Key_RightAlt, Key_N, Key_M, Key_Comma, Key_Period, Key_Slash,     Key_Minus,
+    Key_RightAlt, Key_N, QukeysKey(2), Key_Comma, Key_Period, Key_Slash,     Key_Minus,
 
     Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
     Key::Layer(1)
@@ -94,7 +95,8 @@ namespace hooks {
 
 /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
 void preScanHooks() {
-  qukeys::plugin.preScanHook();
+  uint16_t current_time = millis();
+  qukeys::plugin.preScanHook(current_time);
 }
 
 /// Call keyswitch event handler hooks (run when a key press or release is detected)
@@ -126,7 +128,7 @@ void testLeds() {
   // }
   delay(5000);
   keyboard.testLeds();
-  // delay(1000);
+  delay(1000);
   // keyboard.setAllLeds({200,250,0});
   // for (LedAddr l{0}; l < LedAddr{64}; ++l) {
   //   keyboard.setLedColor(l, {0, 200, 226});

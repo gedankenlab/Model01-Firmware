@@ -4,7 +4,7 @@ _The default firmware for the Keyboardio Model 01_
 
 <h3>This is a quick start guide for folks who are familiar with Arduino and prefer to use the command line. For everyone else:
 
- * [Check out the wiki](https://github.com/keyboardio/Kaleidoscope/wiki/Keyboardio-Model-01-Introduction) for a more in depth introduction to how the Model 01 keyboard and the Kaleidoscope firmware work. 
+ * [Check out the wiki](https://github.com/keyboardio/Kaleidoglyph/wiki/Keyboardio-Model-01-Introduction) for a more in depth introduction to how the Model 01 keyboard and the Kaleidoglyph firmware work. 
  
   * If you have questions, [The community forums are happy to help!](https://community.keyboard.io/)</h3>
 
@@ -21,7 +21,7 @@ On macOS, install the Arduino IDE using [homebrew](http://brew.sh/) [cask](https
 
 ### Linux
 
-On Linux, your distribution's package manager probably includes the Arduino IDE, but it may be an out of date version. If your distribution installs a version of Arduino before 1.6.10, you'll need to install the Arduino IDE following the instructions [on the wiki](https://github.com/keyboardio/Kaleidoscope/wiki/Install-Arduino-support-on-Linux).
+On Linux, your distribution's package manager probably includes the Arduino IDE, but it may be an out of date version. If your distribution installs a version of Arduino before 1.6.10, you'll need to install the Arduino IDE following the instructions [on the wiki](https://github.com/keyboardio/Kaleidoglyph/wiki/Install-Arduino-support-on-Linux).
 
 If you install Arduino into some place that's /not/ `/usr/local/arduino`, you'll need to set the `$ARDUINO_PATH` environment variable to the directory containing the `arduino` and `arduino-builder` binaries.
 
@@ -93,7 +93,7 @@ cd Model01-Firmware
 git pull
 ```
 
-After that, you'll want to update the Kaleidoscope libraries.
+After that, you'll want to update the Kaleidoglyph libraries.
 
 ### MacOS
 ```sh

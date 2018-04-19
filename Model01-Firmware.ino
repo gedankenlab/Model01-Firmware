@@ -7,14 +7,14 @@
 #endif
 
 
-#include <Kaleidoscope.h>
-#include <Kaleidoscope-Qukeys.h>
+#include <Kaleidoglyph.h>
+#include <Kaleidoglyph-Qukeys.h>
+#include <Kaleidoglyph-Unshifter.h>
 
-//#include <kaleidoscope/Controller.h>
 
 // Maybe it's fine to just have a using directive here instead:
-// using namespace kaleidoscope;
-namespace kaleidoscope {
+// using namespace kaleidoglyph;
+namespace kaleidoglyph {
 
 
 namespace qukeys {
@@ -22,7 +22,7 @@ namespace qukeys {
 Qukey qukeys[] = {
   {Key_F, Key_LeftShift},
   {Key_D, Key_LeftControl},
-  {Key_M, Key::Keyboard(0x10, 0b0010)}
+  {Key_M, KeyboardKey(0x10, 0b0010)}
 };
 
 byte qukey_count = sizeof(qukeys)/sizeof(qukeys[0]);
@@ -30,14 +30,26 @@ byte qukey_count = sizeof(qukeys)/sizeof(qukeys[0]);
 } // namespace qukeys {
 
 
+namespace unshifter {
+
+Unkey unkeys[] = {
+  {Key_X, KeyboardKey(0x05, 0b0010)},
+  {KeyboardKey(0x06, 0b0010), Key_T},
+};
+
+byte unkey_count = sizeof(unkeys)/sizeof(unkeys[0]);
+
+} // namespace unshifter {
+
+
 const PROGMEM Key qwerty_keys[] = KEYMAP_STACKED(
-    ___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key::Keyboard(0x04, 0b0010),
+    ___,          Key_1, Key_2, Key_3, Key_4, Key_5, KeyboardKey(0x04, 0b0010),
     Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T,
     Key_PageUp,   Key_A, Key_S, QukeysKey(1), QukeysKey(0), Key_G, Key_Tab,
-    Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
+    Key_PageDown, Key_Z, Key_X, UnshifterKey(1), UnshifterKey(0), Key_B, Key_Escape,
 
     Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
-    Key::Layer(1, 1),
+    LayerKey(1, 1),
 
 
     XXX,          Key_6, Key_7, Key_8,     Key_9,      Key_0,         XXX,
@@ -46,7 +58,7 @@ const PROGMEM Key qwerty_keys[] = KEYMAP_STACKED(
     Key_RightAlt, Key_N, QukeysKey(2), Key_Comma, Key_Period, Key_Slash,     Key_Minus,
 
     Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
-    Key::Layer(1)
+    LayerKey(1)
 );
 
 Layer qwerty {qwerty_keys, ELEMENTS(qwerty_keys)};
@@ -88,9 +100,13 @@ namespace qukeys {
 Plugin plugin {qukeys, qukey_count, keymap, controller};
 }
 
-} // namespace kaleidoscope {
+namespace unshifter {
+Plugin plugin {unkeys, unkey_count};
+}
 
-namespace kaleidoscope {
+} // namespace kaleidoglyph {
+
+namespace kaleidoglyph {
 namespace hooks {
 
 /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
@@ -103,12 +119,21 @@ void preScanHooks() {
 bool keyswitchEventHooks(KeyswitchEvent& event, KeyArray& active_keys, Plugin*& caller) {
   if (! qukeys::plugin.keyswitchEventHook(event, caller))
     return false;
+  if (! unshifter::plugin.keyswitchEventHook(event, caller))
+    return false;
   return true;
 }
 
 /// Call keyboard HID pre-report hooks (run when a keyboard HID report is about to be sent)
 bool preKeyboardReportHooks(hid::keyboard::Report& keyboard_report) {
+  if (! unshifter::plugin.preReportHook(keyboard_report))
+    return false;
   return true;
+}
+
+/// Call keyboard HID post-report hooks (run after a keyboard HID report is sent)
+void postKeyboardReportHooks(KeyswitchEvent event) {
+  unshifter::plugin.postReportHook(event);
 }
 
 } // namespace hooks {
@@ -162,7 +187,7 @@ void testLeds() {
   // }
 }
 
-} // namespace kaleidoscope {
+} // namespace kaleidoglyph {
 
 
 inline void reportMeanCycleTime() {
@@ -192,8 +217,8 @@ void setup() {
   Serial.begin(9600);
 #endif
 
-  kaleidoscope::controller.init();
-  kaleidoscope::testLeds();
+  kaleidoglyph::controller.init();
+  // kaleidoglyph::testLeds();
 }
 
 void loop() {
@@ -202,5 +227,5 @@ void loop() {
   reportMeanCycleTime();
 #endif
 
-  kaleidoscope::controller.run();
+  kaleidoglyph::controller.run();
 }

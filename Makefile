@@ -1,5 +1,5 @@
-# This stub makefile for a Kaleidoscope plugin pulls in 
-# all targets from the Kaleidoscope-Plugin library
+# This stub makefile for a Kaleidoglyph plugin pulls in 
+# all targets from the Kaleidoglyph-Plugin library
 
 UNAME_S := $(shell uname -s)
 
@@ -22,12 +22,12 @@ ifneq ("$(wildcard $(ARDUINO_INSTALLED_ENV)/boards.txt)","")
 ifneq ("$(wildcard $(MANUALLY_INSTALLED_ENV)/boards.txt)","")
 
 $(info ***************************************************************************)
-$(info It appears that you have installed two copies of Kaleidoscope. One copy was)
+$(info It appears that you have installed two copies of Kaleidoglyph. One copy was)
 $(info installed using Arduino's "Board Manager", while the other was installed by)
 $(info hand, probably using "git".)
 $(info )
 $(info This will likely cause some trouble as you try to build keyboard firmware)
-$(info using Kaleidoscope. You may want to remove either: )
+$(info using Kaleidoglyph. You may want to remove either: )
 $(info )
 $(info $(PACKAGE_DIR)/packages/keyboardio/ which was installed using Arduino)
 $(info )
@@ -37,12 +37,12 @@ $(info $(SKETCHBOOK_DIR)/hardware/keyboardio/ which was installed by hand.)
 $(info )
 $(info ***************************************************************************)
 $(info )
-	
+
 endif
 
 BOARD_HARDWARE_PATH = $(ARDUINO_INSTALLED_ENV)
-KALEIDOSCOPE_PLUGIN_MAKEFILE_DIR ?= build-tools/makefiles/
-KALEIDOSCOPE_BUILDER_DIR ?= $(ARDUINO_INSTALLED_ENV)/libraries/Kaleidoscope/bin/
+KALEIDOGLYPH_PLUGIN_MAKEFILE_DIR ?= build-tools/makefiles/
+KALEIDOGLYPH_BUILDER_DIR ?= $(ARDUINO_INSTALLED_ENV)/libraries/Kaleidoglyph/bin/
 
 
 
@@ -50,6 +50,6 @@ endif
 
 
 BOARD_HARDWARE_PATH ?= $(SKETCHBOOK_DIR)/hardware
-KALEIDOSCOPE_PLUGIN_MAKEFILE_DIR ?= keyboardio/avr/build-tools/makefiles/
+KALEIDOGLYPH_PLUGIN_MAKEFILE_DIR ?= keyboardio/avr/build-tools/makefiles/
 
-include $(BOARD_HARDWARE_PATH)/$(KALEIDOSCOPE_PLUGIN_MAKEFILE_DIR)/rules.mk
+include $(BOARD_HARDWARE_PATH)/$(KALEIDOGLYPH_PLUGIN_MAKEFILE_DIR)/rules.mk

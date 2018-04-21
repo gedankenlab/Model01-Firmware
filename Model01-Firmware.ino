@@ -104,6 +104,11 @@ namespace unshifter {
 Plugin plugin {unkeys, unkey_count};
 }
 
+Plugin* plugins[] = {
+  &qukeys,
+  &unshifter,
+};
+
 } // namespace kaleidoglyph {
 
 namespace kaleidoglyph {
@@ -117,10 +122,36 @@ void preScanHooks() {
 
 /// Call keyswitch event handler hooks (run when a key press or release is detected)
 bool keyswitchEventHooks(KeyswitchEvent& event, KeyArray& active_keys, Plugin*& caller) {
-  if (! qukeys::plugin.keyswitchEventHook(event, caller))
-    return false;
-  if (! unshifter::plugin.keyswitchEventHook(event, caller))
-    return false;
+
+  Key key = event.key;
+  byte plugin_count = sizeof(plugins)/sizeof(plugins[0]);
+  bool plugin_mask[plugin_count] = {}; // could be a bit field
+
+  byte i{0};
+  while (i < plugin_count) {
+
+    // If this plugin has already restarted the event once, skip it:
+    if (plugin_mask[i]) {
+      ++i;
+      continue;
+    }
+
+    // Call the plugin's event handler:
+    if (! plugins[i]->keyswitchEventHook(event, caller))
+      return false;
+
+    // If event.key has changed, previous plugins need a chance to act on the corrected
+    // value, so restart the loop:
+    if (event.key != key) {
+      // Mask the plugin that's causing the restart, to prevent infinite loops:
+      plugin_mask[i] = true;
+      i = 0;
+      key = event.key;
+      continue;
+    }
+    ++i;
+  }
+
   return true;
 }
 

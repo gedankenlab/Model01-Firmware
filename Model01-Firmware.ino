@@ -117,7 +117,9 @@ namespace hooks {
 /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
 void preScanHooks() {
   uint16_t current_time = millis();
-  qukeys::plugin.preScanHook(current_time);
+  for (Plugin* plugin : plugins) {
+    plugin->preScanHook(current_time);
+  }
 }
 
 /// Call keyswitch event handler hooks (run when a key press or release is detected)
@@ -157,14 +159,18 @@ bool keyswitchEventHooks(KeyswitchEvent& event, KeyArray& active_keys, Plugin*& 
 
 /// Call keyboard HID pre-report hooks (run when a keyboard HID report is about to be sent)
 bool preKeyboardReportHooks(hid::keyboard::Report& keyboard_report) {
-  if (! unshifter::plugin.preReportHook(keyboard_report))
-    return false;
+  for (Plugin* plugin : plugins) {
+    if (! plugin->preReportHook(keyboard_report))
+      return false;
+  }
   return true;
 }
 
 /// Call keyboard HID post-report hooks (run after a keyboard HID report is sent)
 void postKeyboardReportHooks(KeyswitchEvent event) {
-  unshifter::plugin.postReportHook(event);
+  for (Plugin* plugin : plugins) {
+    plugin->postReportHook(event);
+  }
 }
 
 } // namespace hooks {

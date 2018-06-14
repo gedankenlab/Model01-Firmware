@@ -116,7 +116,7 @@ void preScanHooks() {
 }
 
 /// Call keyswitch event handler hooks (run when a key press or release is detected)
-bool keyswitchEventHooks(KeyswitchEvent& event, KeyArray& active_keys, Plugin*& caller) {
+bool keyswitchEventHooks(KeyEvent& event, KeyArray& active_keys, Plugin*& caller) {
   if (! qukeys::plugin.keyswitchEventHook(event, caller))
     return false;
   if (! unshifter::plugin.keyswitchEventHook(event, caller))
@@ -132,7 +132,7 @@ bool preKeyboardReportHooks(hid::keyboard::Report& keyboard_report) {
 }
 
 /// Call keyboard HID post-report hooks (run after a keyboard HID report is sent)
-void postKeyboardReportHooks(KeyswitchEvent event) {
+void postKeyboardReportHooks(KeyEvent event) {
   unshifter::plugin.postReportHook(event);
 }
 

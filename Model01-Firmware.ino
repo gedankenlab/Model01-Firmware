@@ -19,20 +19,20 @@ namespace kaleidoglyph {
 
 namespace qukeys {
 
-Qukey qukeys[] = {
+qukeys::Qukey qukey_defs[] = {
   {Key_F, Key_LeftShift},
   {Key_D, Key_LeftControl},
   {Key_M, KeyboardKey(0x10, 0b0010)}
 };
 
-byte qukey_count = sizeof(qukeys)/sizeof(qukeys[0]);
+byte qukey_count = sizeof(qukey_defs)/sizeof(qukey_defs[0]);
 
 } // namespace qukeys {
 
 
 namespace unshifter {
 
-Unkey unkeys[] = {
+unshifter::Unkey unkeys[] = {
   {Key_X, KeyboardKey(0x05, 0b0010)},
   {KeyboardKey(0x06, 0b0010), Key_T},
 };
@@ -41,12 +41,13 @@ byte unkey_count = sizeof(unkeys)/sizeof(unkeys[0]);
 
 } // namespace unshifter {
 
-
+// ================================================================================
+// Keymap definition
 const PROGMEM Key qwerty_keys[] = KEYMAP_STACKED(
     ___,          Key_1, Key_2, Key_3, Key_4, Key_5, KeyboardKey(0x04, 0b0010),
     Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T,
-    Key_PageUp,   Key_A, Key_S, QukeysKey(1), QukeysKey(0), Key_G, Key_Tab,
-    Key_PageDown, Key_Z, Key_X, UnshifterKey(1), UnshifterKey(0), Key_B, Key_Escape,
+    Key_PageUp,   Key_A, Key_S, qukeys::QukeysKey(1), qukeys::QukeysKey(0), Key_G, Key_Tab,
+    Key_PageDown, Key_Z, Key_X, unshifter::UnshifterKey(1), unshifter::UnshifterKey(0), Key_B, Key_Escape,
 
     Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
     LayerKey(1, 1),
@@ -55,7 +56,7 @@ const PROGMEM Key qwerty_keys[] = KEYMAP_STACKED(
     XXX,          Key_6, Key_7, Key_8,     Key_9,      Key_0,         XXX,
                   Key_Y, Key_U, Key_I,     Key_O,      Key_P,         Key_Equals,
     Key_Enter,    Key_H, Key_J, Key_K,     Key_L,      Key_Semicolon, Key_Quote,
-    Key_RightAlt, Key_N, QukeysKey(2), Key_Comma, Key_Period, Key_Slash,     Key_Minus,
+    Key_RightAlt, Key_N, qukeys::QukeysKey(2), Key_Comma, Key_Period, Key_Slash,     Key_Minus,
 
     Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
     LayerKey(1)
@@ -90,19 +91,47 @@ Layer* layers[] = {
 };
 
 Keymap keymap {layers, ELEMENTS(layers)};
+// End keymap definition
+// --------------------------------------------------------------------------------
 
+
+// ================================================================================
+// keyboard, reporter, controller
 hardware::Keyboard keyboard;
 hid::keyboard::Report reporter;
 
 Controller controller {keymap, keyboard, reporter};
+// --------------------------------------------------------------------------------
 
-namespace qukeys {
-Plugin plugin {qukeys, qukey_count, keymap, controller};
+
+// ================================================================================
+// Plugins
+namespace plugin {
+qukeys::Plugin    qukeys    {qukeys::qukey_defs, qukeys::qukey_count, keymap, controller};
+unshifter::Plugin unshifter {unshifter::unkeys, unshifter::unkey_count};
 }
 
-namespace unshifter {
-Plugin plugin {unkeys, unkey_count};
+// maybe enum instead?
+namespace pluginid {
+constexpr byte controller {0};
+constexpr byte qukeys     {1};
+constexpr byte unshifter  {2};
 }
+// order doesn't matter here:
+enum class PluginId : byte {
+  controller,
+  qukeys,
+  unshifter,
+};
+
+// also maybe enum -- order matters here:
+namespace KeyEventHandlerId {
+constexpr byte unshifter {0};
+}
+// // order matters here
+// enum class KeyEventHandlerId : byte {
+//   unshifter = 0,
+// };
 
 } // namespace kaleidoglyph {
 
@@ -110,30 +139,45 @@ namespace kaleidoglyph {
 namespace hooks {
 
 /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
-void preScanHooks() {
-  uint16_t current_time = millis();
-  qukeys::plugin.preScanHook(current_time);
+void preKeyswitchScan() {
+  plugin::qukeys.preKeyswitchScan();
 }
 
 /// Call keyswitch event handler hooks (run when a key press or release is detected)
-bool keyswitchEventHooks(KeyEvent& event, KeyArray& active_keys, Plugin*& caller) {
-  if (! qukeys::plugin.keyswitchEventHook(event, caller))
-    return false;
-  if (! unshifter::plugin.keyswitchEventHook(event, caller))
-    return false;
-  return true;
+/// Order matters here:
+EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
+  EventHandlerResult result;
+  switch (event.caller) {
+    case pluginid::controller:
+      result = plugin::qukeys.onKeyswitchEvent(event);
+      if (result == EventHandlerResult::abort)
+        return result;
+    case pluginid::qukeys:
+    default:
+      return EventHandlerResult::proceed;
+  }
+}
+
+/// Order doesn't matter here
+EventHandlerResult onKeyEvent(byte plugin_id, KeyEvent& event) {
+  switch (plugin_id) {
+    case KeyEventHandlerId::unshifter:
+      return plugin::unshifter.onKeyEvent(event);
+    default:
+      return EventHandlerResult::nxplugin;
+  }
 }
 
 /// Call keyboard HID pre-report hooks (run when a keyboard HID report is about to be sent)
-bool preKeyboardReportHooks(hid::keyboard::Report& keyboard_report) {
-  if (! unshifter::plugin.preReportHook(keyboard_report))
+bool preKeyboardReport(hid::keyboard::Report& keyboard_report) {
+  if (! plugin::unshifter.preKeyboardReport(keyboard_report))
     return false;
   return true;
 }
 
 /// Call keyboard HID post-report hooks (run after a keyboard HID report is sent)
-void postKeyboardReportHooks(KeyEvent event) {
-  unshifter::plugin.postReportHook(event);
+void postKeyboardReport(KeyEvent event) {
+  plugin::unshifter.postKeyboardReport(event);
 }
 
 } // namespace hooks {

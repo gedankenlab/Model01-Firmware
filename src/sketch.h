@@ -12,36 +12,30 @@ constexpr byte plugin_count = 3;
 
 namespace pluginid {
 constexpr byte controller = 0;
-constexpr byte plugin_a = 1;
-constexpr byte plugin_b = 2;
-constexpr byte plugin_c = 3;
+constexpr byte unshifter  = 1;
+constexpr byte qukeys     = 2;
 } // namespace id {
 
 } // namespace sketch {
 
 namespace hooks {
 
-constexpr bool abort   = true;
-constexpr bool proceed = false;
-bool onKeyEvent(KeyEvent& event) {
+EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
+  EventHandlerResult result;
   switch (event.caller) {
     case sketch::pluginid::controller:
-      if (plugin_a.onKeyEvent(event)) return true;
-    case sketch::pluginid::plugin_a:
-      if (plugin_b.onKeyEvent(event)) return true;
-    case sketch::pluginid::plugin_b:
-      if (plugin_c.onKeyEvent(event)) return true;
-    case sketch::pluginid::plugin_c:
+      result = qukeys::plugin.onKeyEvent(event);
+      if (result == EventHandlerResult::abort)
+        return result;
+    case sketch::pluginid::qukeys:
     default:
-      return false;
+      return EventHandlerResult::proceed;
   }
 }
 
-EventHandlerResult onKeyEvent(byte id, KeyEvent& event) {
-  switch (id) {
-    case sketch::pluginid::plugin_a: return plugin_a.onKeyEvent(event);
-    case sketch::pluginid::plugin_b: return plugin_b.onKeyEvent(event);
-    case sketch::pluginid::plugin_c: return plugin_c.onKeyEvent(event);
+EventHandlerResult onKeyEvent(byte plugin_id, KeyEvent& event) {
+  switch (plugin_id) {
+    case sketch::pluginid::unshifter: return unshifter.onKeyEvent(event);
     default:
       return EventHandlerResult::nxplugin;
   }

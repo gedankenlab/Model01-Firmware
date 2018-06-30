@@ -2,9 +2,25 @@
 
 #pragma once
 
+#include <kaleidoglyph/hooks.h>
+
 #include <Arduino.h>
 
+#include <kaleidoglyph/EventHandlerResult.h>
+#include <kaleidoglyph/KeyEvent.h>
+#include <kaleidoglyph/hid/Report.h>
+
+#include "sketch/KeyEventHandlerId.h"
+#include "sketch/PluginId.h"
+
+
 namespace kaleidoglyph {
+
+namespace plugin {
+extern qukeys::Plugin    qukeys;
+extern unshifter::Plugin unshifter;
+}
+
 namespace hooks {
 
 /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
@@ -17,19 +33,19 @@ void preKeyswitchScan() {
 EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
   EventHandlerResult result;
   switch (event.caller) {
-    case pluginid::controller:
+    case PluginId::controller:
       result = plugin::qukeys.onKeyEvent(event);
       if (result == EventHandlerResult::abort)
         return result;
-    case pluginid::qukeys:
+    case PluginId::qukeys:
     default:
       return EventHandlerResult::proceed;
   }
 }
 
 /// Order doesn't matter here
-EventHandlerResult onKeyEvent(byte plugin_id, KeyEvent& event) {
-  switch (plugin_id) {
+EventHandlerResult onKeyEvent(KeyEventHandlerId id, KeyEvent& event) {
+  switch (id) {
     case KeyEventHandlerId::unshifter:
       return plugin::unshifter.onKeyEvent(event);
     default:

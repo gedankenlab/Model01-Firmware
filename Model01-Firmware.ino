@@ -8,8 +8,12 @@
 
 
 #include <Kaleidoglyph.h>
+
+// ================================================================================
+// These includes should be added by the pre-build script
 #include <Kaleidoglyph-Qukeys.h>
 #include <Kaleidoglyph-Unshifter.h>
+// --------------------------------------------------------------------------------
 
 
 // Maybe it's fine to just have a using directive here instead:
@@ -43,7 +47,8 @@ byte unkey_count = sizeof(unkeys)/sizeof(unkeys[0]);
 
 // ================================================================================
 // Keymap definition
-const PROGMEM Key qwerty_keys[] = KEYMAP_STACKED(
+const PROGMEM
+Key qwerty_keys[] = KEYMAP_STACKED(
     ___,          Key_1, Key_2, Key_3, Key_4, Key_5, KeyboardKey(0x04, 0b0010),
     Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T,
     Key_PageUp,   Key_A, Key_S, qukeys::QukeysKey(1), qukeys::QukeysKey(0), Key_G, Key_Tab,
@@ -64,7 +69,8 @@ const PROGMEM Key qwerty_keys[] = KEYMAP_STACKED(
 
 Layer qwerty {qwerty_keys, ELEMENTS(qwerty_keys)};
 
-const PROGMEM Key numpad_keys[] = KEYMAP_STACKED(
+const PROGMEM
+Key numpad_keys[] = KEYMAP_STACKED(
     ___, ___, ___, ___, ___, ___, XXX,
     ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___, ___,

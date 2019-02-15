@@ -49,7 +49,7 @@ EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
     // are included), so it can only call `onKeyswitchEvent()` with itself (or the
     // controller) as `event.caller`.
     case byte(PluginId::controller):
-      result = plugin::qukeys.onKeyEvent(event);
+      result = plugin::qukeys.onKeyswitchEvent(event);
       if (result == EventHandlerResult::abort) {
         return result;
       }

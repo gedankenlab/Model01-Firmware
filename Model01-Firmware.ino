@@ -29,7 +29,7 @@ qukeys::Qukey qukey_defs[] = {
   {Key_M, KeyboardKey(0x10, 0b0010)}
 };
 
-byte qukey_count = sizeof(qukey_defs)/sizeof(qukey_defs[0]);
+byte qukey_count = ELEMENTS(qukey_defs);
 
 } // namespace qukeys {
 
@@ -41,7 +41,7 @@ unshifter::Unkey unkeys[] = {
   {KeyboardKey(0x06, 0b0010), Key_T},
 };
 
-byte unkey_count = sizeof(unkeys)/sizeof(unkeys[0]);
+byte unkey_count = ELEMENTS(unkeys);
 
 } // namespace unshifter {
 
@@ -117,23 +117,24 @@ qukeys::Plugin    qukeys    {qukeys::qukey_defs, qukeys::qukey_count, keymap, co
 unshifter::Plugin unshifter {unshifter::unkeys, unshifter::unkey_count};
 }
 
-// maybe enum instead?
-namespace pluginid {
-constexpr byte controller {0};
-constexpr byte qukeys     {1};
-constexpr byte unshifter  {2};
-}
-// order doesn't matter here:
-enum class PluginId : byte {
-  controller,
-  qukeys,
-  unshifter,
-};
+// // maybe enum instead?
+// namespace pluginid {
+// constexpr byte controller {0};
+// constexpr byte qukeys     {1};
+// constexpr byte unshifter  {2};
+// }
+// // order doesn't matter here:
+// enum class PluginId : byte {
+//   controller,
+//   qukeys,
+//   unshifter,
+// };
 
-// also maybe enum -- order matters here:
-namespace KeyEventHandlerId {
-constexpr byte unshifter {0};
-}
+// // also maybe enum -- order matters here:
+// namespace KeyEventHandlerId {
+// constexpr byte unshifter {0};
+// }
+
 // // order matters here
 // enum class KeyEventHandlerId : byte {
 //   unshifter = 0,
@@ -141,52 +142,53 @@ constexpr byte unshifter {0};
 
 } // namespace kaleidoglyph {
 
+#include "sketch/hooks.inc"
 namespace kaleidoglyph {
-namespace hooks {
+// namespace hooks {
 
-/// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
-void preKeyswitchScan() {
-  plugin::qukeys.preKeyswitchScan();
-}
+// /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
+// void preKeyswitchScan() {
+//   plugin::qukeys.preKeyswitchScan();
+// }
 
-/// Call keyswitch event handler hooks (run when a key press or release is detected)
-/// Order matters here:
-EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
-  EventHandlerResult result;
-  switch (event.caller) {
-    case pluginid::controller:
-      result = plugin::qukeys.onKeyswitchEvent(event);
-      if (result == EventHandlerResult::abort)
-        return result;
-    case pluginid::qukeys:
-    default:
-      return EventHandlerResult::proceed;
-  }
-}
+// /// Call keyswitch event handler hooks (run when a key press or release is detected)
+// /// Order matters here:
+// EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
+//   EventHandlerResult result;
+//   switch (event.caller) {
+//     case pluginid::controller:
+//       result = plugin::qukeys.onKeyswitchEvent(event);
+//       if (result == EventHandlerResult::abort)
+//         return result;
+//     case pluginid::qukeys:
+//     default:
+//       return EventHandlerResult::proceed;
+//   }
+// }
 
-/// Order doesn't matter here
-EventHandlerResult onKeyEvent(byte plugin_id, KeyEvent& event) {
-  switch (plugin_id) {
-    case KeyEventHandlerId::unshifter:
-      return plugin::unshifter.onKeyEvent(event);
-    default:
-      return EventHandlerResult::nxplugin;
-  }
-}
+// /// Order doesn't matter here
+// EventHandlerResult onKeyEvent(byte plugin_id, KeyEvent& event) {
+//   switch (plugin_id) {
+//     case KeyEventHandlerId::unshifter:
+//       return plugin::unshifter.onKeyEvent(event);
+//     default:
+//       return EventHandlerResult::nxplugin;
+//   }
+// }
 
-/// Call keyboard HID pre-report hooks (run when a keyboard HID report is about to be sent)
-bool preKeyboardReport(hid::keyboard::Report& keyboard_report) {
-  if (! plugin::unshifter.preKeyboardReport(keyboard_report))
-    return false;
-  return true;
-}
+// /// Call keyboard HID pre-report hooks (run when a keyboard HID report is about to be sent)
+// bool preKeyboardReport(hid::keyboard::Report& keyboard_report) {
+//   if (! plugin::unshifter.preKeyboardReport(keyboard_report))
+//     return false;
+//   return true;
+// }
 
-/// Call keyboard HID post-report hooks (run after a keyboard HID report is sent)
-void postKeyboardReport(KeyEvent event) {
-  plugin::unshifter.postKeyboardReport(event);
-}
+// /// Call keyboard HID post-report hooks (run after a keyboard HID report is sent)
+// void postKeyboardReport(KeyEvent event) {
+//   plugin::unshifter.postKeyboardReport(event);
+// }
 
-} // namespace hooks {
+// } // namespace hooks {
 
 void testLeds() {
   // for (byte i{0}; i < 64; ++i) {

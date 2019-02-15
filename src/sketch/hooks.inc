@@ -1,5 +1,9 @@
 // -*- c++ -*-
 
+// This should really be a *.cpp file, but if it is, the build process will try to compile
+// it twice, resulting in confusion "multiple definition" errors at link time (where the
+// "multiple definitions" both occur on the same line of the same file). So I call it
+// "hooks.inc", and #include it from the sketch file itself. Awkward, but effective.
 #pragma once
 
 #include <kaleidoglyph/hooks.h>
@@ -9,6 +13,9 @@
 #include <kaleidoglyph/EventHandlerResult.h>
 #include <kaleidoglyph/KeyEvent.h>
 #include <kaleidoglyph/hid/Report.h>
+
+#include <Kaleidoglyph-Qukeys.h>
+#include <Kaleidoglyph-Unshifter.h>
 
 #include "sketch/KeyEventHandlerId.h"
 #include "sketch/PluginId.h"
@@ -33,18 +40,29 @@ void preKeyswitchScan() {
 EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
   EventHandlerResult result;
   switch (event.caller) {
-    case PluginId::controller:
+    // This looks a bit odd, because the code for each plugin *precedes* its case
+    // label. That's because they're ordered, so if Plugin A is the `event.caller`
+    // (because Plugin A is the caller), it doesn't get to re-process the event; it goes
+    // to Plugin B instead. There are no break statements at the end of each case label
+    // intentionally -- this is like an unrolled loop. Plugin A doesn't know which plugin
+    // is next in the order (it probably doesn't know anything about what other plugins
+    // are included), so it can only call `onKeyswitchEvent()` with itself (or the
+    // controller) as `event.caller`.
+    case byte(PluginId::controller):
       result = plugin::qukeys.onKeyEvent(event);
-      if (result == EventHandlerResult::abort)
+      if (result == EventHandlerResult::abort) {
         return result;
-    case PluginId::qukeys:
+      }
+      // no break here; we deliberately fall through to the next plugin
+    case byte(PluginId::qukeys):
+      // no break here; we deliberately fall through to the next plugin
     default:
       return EventHandlerResult::proceed;
   }
 }
 
 /// Order doesn't matter here
-EventHandlerResult onKeyEvent(KeyEventHandlerId id, KeyEvent& event) {
+EventHandlerResult onKeyEvent(byte id, KeyEvent& event) {
   switch (id) {
     case KeyEventHandlerId::unshifter:
       return plugin::unshifter.onKeyEvent(event);

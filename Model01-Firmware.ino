@@ -50,8 +50,8 @@ byte unkey_count = ELEMENTS(unkeys);
 namespace glukeys{
 
 Key glukey_defs[] = {
-  Key_A,
-  Key_B,
+  Key_LeftShift,
+  Key_RightShift,
   Key_C,
 };
 

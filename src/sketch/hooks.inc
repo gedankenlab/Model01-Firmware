@@ -26,6 +26,7 @@ namespace kaleidoglyph {
 namespace plugin {
 extern qukeys::Plugin    qukeys;
 extern unshifter::Plugin unshifter;
+extern glukeys::Plugin   glukeys;
 }
 
 namespace hooks {
@@ -66,6 +67,8 @@ EventHandlerResult onKeyEvent(byte id, KeyEvent& event) {
   switch (id) {
     case KeyEventHandlerId::unshifter:
       return plugin::unshifter.onKeyEvent(event);
+    case KeyEventHandlerId::glukeys:
+      return plugin::glukeys.onKeyEvent(event);
     default:
       return EventHandlerResult::nxplugin;
   }
@@ -81,6 +84,7 @@ bool preKeyboardReport(hid::keyboard::Report& keyboard_report) {
 /// Call keyboard HID post-report hooks (run after a keyboard HID report is sent)
 void postKeyboardReport(KeyEvent event) {
   plugin::unshifter.postKeyboardReport(event);
+  plugin::glukeys.postKeyboardReport(event);
 }
 
 } // namespace hooks {

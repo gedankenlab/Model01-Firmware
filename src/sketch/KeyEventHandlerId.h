@@ -27,7 +27,8 @@ namespace kaleidoglyph {
 class KeyEventHandlerId {
  public:
   static constexpr byte unshifter = 0;
-  static constexpr byte count     = 1;
+  static constexpr byte glukeys   = 1;
+  static constexpr byte count     = 2;
 };
 
 // namespace key_event_handler_id {

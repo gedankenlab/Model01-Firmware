@@ -13,6 +13,7 @@
 // These includes should be added by the pre-build script
 #include <Kaleidoglyph-Qukeys.h>
 #include <Kaleidoglyph-Unshifter.h>
+#include <Kaleidoglyph-Glukeys.h>
 // --------------------------------------------------------------------------------
 
 
@@ -45,14 +46,27 @@ byte unkey_count = ELEMENTS(unkeys);
 
 } // namespace unshifter {
 
+
+namespace glukeys{
+
+Key glukey_defs[] = {
+  Key_A,
+  Key_B,
+  Key_C,
+};
+
+byte glukey_count = ELEMENTS(glukey_defs);
+
+} // namespace qukeys {
+
 // ================================================================================
 // Keymap definition
 const PROGMEM
 Key qwerty_keys[] = KEYMAP_STACKED(
     ___,          Key_1, Key_2, Key_3, Key_4, Key_5, KeyboardKey(0x04, 0b0010),
-    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T,
-    Key_PageUp,   Key_A, Key_S, qukeys::QukeysKey(1), qukeys::QukeysKey(0), Key_G, Key_Tab,
-    Key_PageDown, Key_Z, Key_X, unshifter::UnshifterKey(1), unshifter::UnshifterKey(0), Key_B, Key_Escape,
+    glukeys::GlukeysKey(0), Key_Q, Key_W, Key_E, Key_R, Key_T,
+    glukeys::GlukeysKey(1), Key_A, Key_S, qukeys::QukeysKey(1), qukeys::QukeysKey(0), Key_G, Key_Tab,
+    glukeys::GlukeysKey(3), Key_Z, Key_X, unshifter::UnshifterKey(1), unshifter::UnshifterKey(0), Key_B, Key_Escape,
 
     Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
     LayerKey(1, 1),
@@ -115,6 +129,7 @@ Controller controller {keymap, keyboard, reporter};
 namespace plugin {
 qukeys::Plugin    qukeys    {qukeys::qukey_defs, qukeys::qukey_count, keymap, controller};
 unshifter::Plugin unshifter {unshifter::unkeys, unshifter::unkey_count};
+glukeys::Plugin   glukeys   {glukeys::glukey_defs, glukeys::glukey_count};
 }
 
 // // maybe enum instead?

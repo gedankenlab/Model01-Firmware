@@ -24,7 +24,7 @@ namespace kaleidoglyph {
 
 namespace qukeys {
 
-qukeys::Qukey qukey_defs[] = {
+Qukey qukey_defs[] = {
   {Key_F, Key_LeftShift},
   {Key_D, Key_LeftControl},
   {Key_M, KeyboardKey(0x10, 0b0010)}
@@ -37,18 +37,20 @@ byte qukey_count = ELEMENTS(qukey_defs);
 
 namespace unshifter {
 
-unshifter::Unkey unkeys[] = {
+const PROGMEM
+Unkey unkey_defs[] = {
   {Key_X, KeyboardKey(0x05, 0b0010)},
   {KeyboardKey(0x06, 0b0010), Key_T},
 };
 
-byte unkey_count = ELEMENTS(unkeys);
+byte unkey_count = ELEMENTS(unkey_defs);
 
 } // namespace unshifter {
 
 
 namespace glukeys{
 
+const PROGMEM
 Key glukey_defs[] = {
   Key_LeftShift,
   Key_RightShift,
@@ -128,7 +130,7 @@ Controller controller {keymap, keyboard, reporter};
 // Plugins
 namespace plugin {
 qukeys::Plugin    qukeys    {qukeys::qukey_defs, qukeys::qukey_count, keymap, controller};
-unshifter::Plugin unshifter {unshifter::unkeys, unshifter::unkey_count};
+unshifter::Plugin unshifter {unshifter::unkey_defs, unshifter::unkey_count};
 glukeys::Plugin   glukeys   {glukeys::glukey_defs, glukeys::glukey_count, controller};
 }
 

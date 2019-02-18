@@ -129,7 +129,7 @@ Controller controller {keymap, keyboard, reporter};
 namespace plugin {
 qukeys::Plugin    qukeys    {qukeys::qukey_defs, qukeys::qukey_count, keymap, controller};
 unshifter::Plugin unshifter {unshifter::unkeys, unshifter::unkey_count};
-glukeys::Plugin   glukeys   {glukeys::glukey_defs, glukeys::glukey_count};
+glukeys::Plugin   glukeys   {glukeys::glukey_defs, glukeys::glukey_count, controller};
 }
 
 // // maybe enum instead?

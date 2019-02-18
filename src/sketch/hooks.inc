@@ -84,7 +84,6 @@ bool preKeyboardReport(hid::keyboard::Report& keyboard_report) {
 /// Call keyboard HID post-report hooks (run after a keyboard HID report is sent)
 void postKeyboardReport(KeyEvent event) {
   plugin::unshifter.postKeyboardReport(event);
-  plugin::glukeys.postKeyboardReport(event);
 }
 
 } // namespace hooks {

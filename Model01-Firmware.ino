@@ -54,7 +54,7 @@ const PROGMEM
 Key glukey_defs[] = {
   Key_LeftShift,
   Key_RightShift,
-  Key_C,
+  LayerKey{1, true},
 };
 
 byte glukey_count = ELEMENTS(glukey_defs);
@@ -68,9 +68,9 @@ Key qwerty_keys[] = KEYMAP_STACKED(
     ___,          Key_1, Key_2, Key_3, Key_4, Key_5, KeyboardKey(0x04, 0b0010),
     glukeys::GlukeysKey(0), Key_Q, Key_W, Key_E, Key_R, Key_T,
     glukeys::GlukeysKey(1), Key_A, Key_S, qukeys::QukeysKey(1), qukeys::QukeysKey(0), Key_G, Key_Tab,
-    glukeys::GlukeysKey(3), Key_Z, Key_X, unshifter::UnshifterKey(1), unshifter::UnshifterKey(0), Key_B, Key_Escape,
+    glukeys::cGlukey::meta, Key_Z, Key_X, unshifter::UnshifterKey(1), unshifter::UnshifterKey(0), Key_B, glukeys::cGlukey::cancel,
 
-    Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
+    Key_LeftControl, Key_Backspace, Key_LeftGui, glukeys::GlukeysKey(2),
     LayerKey(1, 1),
 
 

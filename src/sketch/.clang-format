@@ -1,0 +1,7 @@
+# -*- yaml -*-
+
+BasedOnStyle: Google
+
+AlignConsecutiveAssignments: true
+AlignEscapedNewlines: Right
+ColumnLimit: 0

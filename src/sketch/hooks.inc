@@ -34,6 +34,7 @@ namespace hooks {
 /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
 void preKeyswitchScan() {
   plugin::qukeys.preKeyswitchScan();
+  plugin::glukeys.preKeyswitchScan();
 }
 
 /// Call keyswitch event handler hooks (run when a key press or release is detected)

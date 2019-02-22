@@ -70,7 +70,8 @@ Key qwerty_keys[] = KEYMAP_STACKED(
     glukeys::GlukeysKey(1), Key_A, Key_S, qukeys::QukeysKey(1), qukeys::QukeysKey(0), Key_G, Key_Tab,
     glukeys::cGlukey::meta, Key_Z, Key_X, unshifter::UnshifterKey(1), unshifter::UnshifterKey(0), Key_B, glukeys::cGlukey::cancel,
 
-    Key_LeftControl, Key_Backspace, Key_LeftGui, glukeys::GlukeysKey(2),
+    glukeys::glukeysModifierKey(1), Key_Backspace, Key_LeftGui, glukeys::GlukeysKey(2),
+    //Key_LeftControl, Key_Backspace, Key_LeftGui, glukeys::GlukeysKey(2),
     LayerKey(1, 1),
 
 
@@ -80,6 +81,7 @@ Key qwerty_keys[] = KEYMAP_STACKED(
     Key_RightAlt, Key_N, qukeys::QukeysKey(2), Key_Comma, Key_Period, Key_Slash,     Key_Minus,
 
     Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
+    //glukeys::glukeysModifierKey(Key_RightShift), Key_LeftAlt, Key_Spacebar, Key_RightControl,
     LayerKey(1)
 );
 

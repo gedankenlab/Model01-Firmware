@@ -30,7 +30,7 @@ Qukey qukey_defs[] = {
   {Key_M, KeyboardKey(0x10, 0b0010)}
 };
 
-byte qukey_count = ELEMENTS(qukey_defs);
+byte qukey_count = arraySize(qukey_defs);
 
 } // namespace qukeys {
 
@@ -43,7 +43,7 @@ Unkey unkey_defs[] = {
   {KeyboardKey(0x06, 0b0010), Key_T},
 };
 
-byte unkey_count = ELEMENTS(unkey_defs);
+byte unkey_count = arraySize(unkey_defs);
 
 } // namespace unshifter {
 
@@ -57,7 +57,7 @@ Key glukey_defs[] = {
   LayerKey{1, true},
 };
 
-byte glukey_count = ELEMENTS(glukey_defs);
+byte glukey_count = arraySize(glukey_defs);
 
 } // namespace qukeys {
 
@@ -85,7 +85,7 @@ Key qwerty_keys[] = KEYMAP_STACKED(
     LayerKey(1)
 );
 
-Layer qwerty {qwerty_keys, ELEMENTS(qwerty_keys)};
+Layer qwerty {qwerty_keys, arraySize(qwerty_keys)};
 
 const PROGMEM
 Key numpad_keys[] = KEYMAP_STACKED(
@@ -107,14 +107,14 @@ Key numpad_keys[] = KEYMAP_STACKED(
     ___
 );
 
-Layer numpad {numpad_keys, ELEMENTS(numpad_keys)};
+Layer numpad {numpad_keys, arraySize(numpad_keys)};
 
 Layer* layers[] = {
   &qwerty,
   &numpad,
 };
 
-Keymap keymap {layers, ELEMENTS(layers)};
+Keymap keymap {layers, arraySize(layers)};
 // End keymap definition
 // --------------------------------------------------------------------------------
 
@@ -284,12 +284,19 @@ inline void reportMeanCycleTime() {
 
 void setup() {
 
-#if defined(SERIAL_DEBUG)
+#if defined(NOOOOOSERIAL_DEBUG)
+  //Serial.begin(115200);
   Serial.begin(9600);
+
+  delay(2200);
+  for (int i{0}; i < 32; ++i) {
+    Serial.print(i + 1);
+    Serial.println(F(": Hello, my name is Gwydion, and I'm very pleased to make your acquaintance."));
+  }
 #endif
 
   kaleidoglyph::controller.init();
-  // kaleidoglyph::testLeds();
+  //kaleidoglyph::testLeds();
 }
 
 void loop() {

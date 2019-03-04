@@ -33,6 +33,7 @@ namespace hooks {
 
 /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
 void preKeyswitchScan() {
+  led_controller.preKeyswitchScan();
   plugin::qukeys.preKeyswitchScan();
   plugin::glukeys.preKeyswitchScan();
 }

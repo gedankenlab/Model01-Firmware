@@ -133,132 +133,18 @@ Controller controller {keymap, keyboard, reporter};
 namespace plugin {
 qukeys::Plugin    qukeys    {qukeys::qukey_defs, qukeys::qukey_count, keymap, controller};
 unshifter::Plugin unshifter {unshifter::unkey_defs, unshifter::unkey_count};
-glukeys::Plugin   glukeys   {glukeys::glukey_defs, glukeys::glukey_count, controller};
+glukeys::Plugin   glukeys   {glukeys::glukey_defs, glukeys::glukey_count, controller, keyboard};
 }
 
-// // maybe enum instead?
-// namespace pluginid {
-// constexpr byte controller {0};
-// constexpr byte qukeys     {1};
-// constexpr byte unshifter  {2};
-// }
-// // order doesn't matter here:
-// enum class PluginId : byte {
-//   controller,
-//   qukeys,
-//   unshifter,
-// };
+namespace plugin {
+glukeys::LedMode glukeys_led_mode{glukeys};
 
-// // also maybe enum -- order matters here:
-// namespace KeyEventHandlerId {
-// constexpr byte unshifter {0};
-// }
-
-// // order matters here
-// enum class KeyEventHandlerId : byte {
-//   unshifter = 0,
-// };
+LedMode* led_modes[] = {
+}
 
 } // namespace kaleidoglyph {
 
 #include "sketch/hooks.inc"
-namespace kaleidoglyph {
-// namespace hooks {
-
-// /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
-// void preKeyswitchScan() {
-//   plugin::qukeys.preKeyswitchScan();
-// }
-
-// /// Call keyswitch event handler hooks (run when a key press or release is detected)
-// /// Order matters here:
-// EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
-//   EventHandlerResult result;
-//   switch (event.caller) {
-//     case pluginid::controller:
-//       result = plugin::qukeys.onKeyswitchEvent(event);
-//       if (result == EventHandlerResult::abort)
-//         return result;
-//     case pluginid::qukeys:
-//     default:
-//       return EventHandlerResult::proceed;
-//   }
-// }
-
-// /// Order doesn't matter here
-// EventHandlerResult onKeyEvent(byte plugin_id, KeyEvent& event) {
-//   switch (plugin_id) {
-//     case KeyEventHandlerId::unshifter:
-//       return plugin::unshifter.onKeyEvent(event);
-//     default:
-//       return EventHandlerResult::nxplugin;
-//   }
-// }
-
-// /// Call keyboard HID pre-report hooks (run when a keyboard HID report is about to be sent)
-// bool preKeyboardReport(hid::keyboard::Report& keyboard_report) {
-//   if (! plugin::unshifter.preKeyboardReport(keyboard_report))
-//     return false;
-//   return true;
-// }
-
-// /// Call keyboard HID post-report hooks (run after a keyboard HID report is sent)
-// void postKeyboardReport(KeyEvent event) {
-//   plugin::unshifter.postKeyboardReport(event);
-// }
-
-// } // namespace hooks {
-
-void testLeds() {
-  // for (byte i{0}; i < 64; ++i) {
-  //   LedAddr l{i};
-  //   keyboard.setLedColor(l, {255, 0, 0});
-  //   delay(100);
-  //   // keyboard.updateLeds();
-  //   // delay(100);
-  //   keyboard.setLedColor(l, {0,0,0});
-  //   // keyboard.updateLeds();
-  //   delay(100);
-  //   // keyboard.setLedColor(l, {0,0,0});
-  //   // delay(10);
-  // }
-  delay(5000);
-  keyboard.testLeds();
-  delay(1000);
-  // keyboard.setAllLeds({200,250,0});
-  // for (LedAddr l{0}; l < LedAddr{64}; ++l) {
-  //   keyboard.setLedColor(l, {0, 200, 226});
-  //   keyboard.updateLeds();
-  //   delay(100);
-  //   // keyboard.setLedColor(l, {0,0,0});
-  //   // // keyboard.updateLeds();
-  //   // delay(10);
-  // }
-  // // for (byte i{0}; i < 64; ++i) {
-  // //   LedAddr l{i};
-  // //   delay(100);
-  // //   keyboard.setLedColor(l, {0,0,0});
-  // // }
-  // // for (LedAddr l{0}; l < LedAddr{64}; ++l) {
-  // //   delay(100);
-  // //   keyboard.setLedColor(l, {0,0,0});
-  // // }
-  // for (KeyAddr k{cKeyAddr::start}; k < cKeyAddr::end; ++k) {
-  //   // uint32_t foo = micros();
-  //   // byte r = foo & 0xFF; foo >>= 4;
-  //   // byte g = foo & 0xFF; foo >>= 4;
-  //   // byte b = foo & 0xFF;
-  //   // Color color(r, g, b);
-  //   keyboard.setKeyColor(k, {200,100,0});
-  //   keyboard.updateLeds();
-  //   delay(500);
-  //   keyboard.setKeyColor(k, {0,0,0});
-  //   // keyboard.updateLeds();
-  //   delay(50);
-  // }
-}
-
-} // namespace kaleidoglyph {
 
 
 inline void reportMeanCycleTime() {
@@ -284,15 +170,9 @@ inline void reportMeanCycleTime() {
 
 void setup() {
 
-#if defined(NOOOOOSERIAL_DEBUG)
+#if defined(SERIAL_DEBUG)
   //Serial.begin(115200);
   Serial.begin(9600);
-
-  delay(2200);
-  for (int i{0}; i < 32; ++i) {
-    Serial.print(i + 1);
-    Serial.println(F(": Hello, my name is Gwydion, and I'm very pleased to make your acquaintance."));
-  }
 #endif
 
   kaleidoglyph::controller.init();

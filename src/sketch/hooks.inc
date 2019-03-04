@@ -1,7 +1,7 @@
 // -*- c++ -*-
 
 // This should really be a *.cpp file, but if it is, the build process will try to compile
-// it twice, resulting in confusion "multiple definition" errors at link time (where the
+// it twice, resulting in confusing "multiple definition" errors at link time (where the
 // "multiple definitions" both occur on the same line of the same file). So I call it
 // "hooks.inc", and #include it from the sketch file itself. Awkward, but effective.
 #pragma once

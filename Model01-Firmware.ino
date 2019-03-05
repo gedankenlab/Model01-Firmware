@@ -133,14 +133,17 @@ Controller controller {keymap, keyboard, reporter};
 namespace plugin {
 qukeys::Plugin    qukeys    {qukeys::qukey_defs, qukeys::qukey_count, keymap, controller};
 unshifter::Plugin unshifter {unshifter::unkey_defs, unshifter::unkey_count};
-glukeys::Plugin   glukeys   {glukeys::glukey_defs, glukeys::glukey_count, controller, keyboard};
+glukeys::Plugin   glukeys   {glukeys::glukey_defs, glukeys::glukey_count, controller};
 }
 
 namespace plugin {
 glukeys::LedMode glukeys_led_mode{glukeys};
-
-LedMode* led_modes[] = {
 }
+
+// LedBackgroundMode* led_modes[] = {
+// };
+
+LedController led_controller {controller, keyboard};
 
 } // namespace kaleidoglyph {
 
@@ -174,6 +177,7 @@ void setup() {
   //Serial.begin(115200);
   Serial.begin(9600);
 #endif
+  delay(1000);
 
   kaleidoglyph::controller.init();
   //kaleidoglyph::testLeds();

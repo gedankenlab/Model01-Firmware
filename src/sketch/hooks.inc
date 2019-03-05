@@ -38,6 +38,17 @@ void preKeyswitchScan() {
   plugin::glukeys.preKeyswitchScan();
 }
 
+void setLedForeground(KeyAddr k) {
+  led_controller.setForeground(k);
+}
+
+bool setForegroundColor(KeyAddr k, LedController& led_controller) {
+  if ( plugin::glukeys_led_mode.setForegroundColor(k, led_controller) ) {
+    return true;
+  }
+  return false;
+}
+
 /// Call keyswitch event handler hooks (run when a key press or release is detected)
 /// Order matters here:
 EventHandlerResult onKeyswitchEvent(KeyEvent& event) {

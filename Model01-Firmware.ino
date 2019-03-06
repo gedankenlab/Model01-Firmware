@@ -15,6 +15,7 @@
 #include <Kaleidoglyph-Unshifter.h>
 #include <Kaleidoglyph-Glukeys.h>
 // --------------------------------------------------------------------------------
+#include <kaleidoglyph/led/SolidColor.h>
 
 
 // Maybe it's fine to just have a using directive here instead:
@@ -140,10 +141,13 @@ namespace plugin {
 glukeys::LedMode glukeys_led_mode{glukeys};
 }
 
-// LedBackgroundMode* led_modes[] = {
-// };
+LedSolidColorMode dim_blue_background{Color(0, 0, 100)};
 
-LedController led_controller {controller, keyboard};
+LedBackgroundMode* led_modes[] = {
+  &dim_blue_background,
+};
+
+LedController led_controller {controller, keyboard, led_modes, arraySize(led_modes)};
 
 } // namespace kaleidoglyph {
 
@@ -190,4 +194,12 @@ void loop() {
 #endif
 
   kaleidoglyph::controller.run();
+
+  // static uint32_t last_flip_time{0};
+  // uint32_t current_time = kaleidoglyph::Controller::scanStartTime();
+  // uint32_t elapsed_time = current_time - last_flip_time;
+  // if (elapsed_time > 5000) {
+  //   kaleidoglyph::led_controller.nextMode();
+  //   last_flip_time = current_time;
+  // }
 }

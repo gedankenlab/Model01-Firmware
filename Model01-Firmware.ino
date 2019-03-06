@@ -16,6 +16,8 @@
 #include <Kaleidoglyph-Glukeys.h>
 // --------------------------------------------------------------------------------
 #include <kaleidoglyph/led/SolidColor.h>
+#include <kaleidoglyph/led/Breathe.h>
+#include <kaleidoglyph/led/Rainbow.h>
 
 
 // Maybe it's fine to just have a using directive here instead:
@@ -142,9 +144,15 @@ glukeys::LedMode glukeys_led_mode{glukeys};
 }
 
 LedSolidColorMode dim_blue_background{Color(0, 0, 100)};
+LedBreatheMode breathe_mode{170};
+LedRainbowMode rainbow_mode;
+LedRainbowWaveMode rainbow_wave_mode;
 
 LedBackgroundMode* led_modes[] = {
   &dim_blue_background,
+  &breathe_mode,
+  &rainbow_mode,
+  &rainbow_wave_mode,
 };
 
 LedController led_controller {controller, keyboard, led_modes, arraySize(led_modes)};
@@ -167,7 +175,7 @@ inline void reportMeanCycleTime() {
   }
 }
 
-//#define REPORT_CYCLE_TIME_AVERAGES
+#define REPORT_CYCLE_TIME_AVERAGES
 
 #if defined (REPORT_CYCLE_TIME_AVERAGES)
 #define SERIAL_DEBUG
@@ -185,6 +193,7 @@ void setup() {
 
   kaleidoglyph::controller.init();
   //kaleidoglyph::testLeds();
+  kaleidoglyph::led_controller.setActiveMode(3);
 }
 
 void loop() {

@@ -15,9 +15,10 @@ namespace kaleidoglyph {
 // anyway.
 class KeyEventHandlerId {
  public:
-  static constexpr byte unshifter = 0;
-  static constexpr byte glukeys   = 1;
-  static constexpr byte count     = 2;
+  static constexpr byte led_controller = 0;
+  static constexpr byte unshifter      = 1;
+  static constexpr byte glukeys        = 2;
+  static constexpr byte count          = 3;
 };
 
 }

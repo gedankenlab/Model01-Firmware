@@ -125,9 +125,9 @@ Keymap keymap {layers, arraySize(layers)};
 // ================================================================================
 // keyboard, reporter, controller
 hardware::Keyboard keyboard;
-hid::keyboard::Report reporter;
+hid::keyboard::Dispatcher dispatcher;
 
-Controller controller {keymap, keyboard, reporter};
+Controller controller {keymap, keyboard, dispatcher};
 // --------------------------------------------------------------------------------
 
 
@@ -161,7 +161,6 @@ LedController led_controller {controller, keyboard, led_modes, arraySize(led_mod
 
 #include "sketch/hooks.inc"
 
-
 inline void reportMeanCycleTime() {
   static uint8_t counter{0};
   static uint32_t start_time = micros();
@@ -175,7 +174,7 @@ inline void reportMeanCycleTime() {
   }
 }
 
-#define REPORT_CYCLE_TIME_AVERAGES
+//#define REPORT_CYCLE_TIME_AVERAGES
 
 #if defined (REPORT_CYCLE_TIME_AVERAGES)
 #define SERIAL_DEBUG
@@ -189,11 +188,11 @@ void setup() {
   //Serial.begin(115200);
   Serial.begin(9600);
 #endif
-  delay(1000);
 
   kaleidoglyph::controller.init();
   //kaleidoglyph::testLeds();
   kaleidoglyph::led_controller.setActiveMode(3);
+
 }
 
 void loop() {

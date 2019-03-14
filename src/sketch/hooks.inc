@@ -12,7 +12,7 @@
 
 #include <kaleidoglyph/EventHandlerResult.h>
 #include <kaleidoglyph/KeyEvent.h>
-#include <kaleidoglyph/hid/Report.h>
+#include <kaleidoglyph/hid/keyboard.h>
 
 #include <Kaleidoglyph-Qukeys.h>
 #include <Kaleidoglyph-Unshifter.h>
@@ -27,6 +27,13 @@ namespace plugin {
 extern qukeys::Plugin    qukeys;
 extern unshifter::Plugin unshifter;
 extern glukeys::Plugin   glukeys;
+}
+
+void toggleHidProtocol() {
+  keyboard.detachFromHost();
+  dispatcher.toggleProtocol();
+  delay(1000);
+  keyboard.attachToHost();
 }
 
 namespace hooks {
@@ -52,6 +59,10 @@ bool setForegroundColor(KeyAddr k, LedController& led_controller) {
 /// Call keyswitch event handler hooks (run when a key press or release is detected)
 /// Order matters here:
 EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
+  if (event.key == Key{cKeyboardKey::_0}) {
+    toggleHidProtocol();
+    return EventHandlerResult::abort;
+  }
   EventHandlerResult result;
   switch (event.caller) {
     // This looks a bit odd, because the code for each plugin *precedes* its case

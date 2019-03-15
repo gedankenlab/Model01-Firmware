@@ -31,7 +31,7 @@ extern glukeys::Plugin   glukeys;
 
 void toggleHidProtocol() {
   controller.detachFromHost();
-  dispatcher.toggleProtocol();
+  controller.toggleHidProtocol();
   delay(1000);
   controller.attachToHost();
 }

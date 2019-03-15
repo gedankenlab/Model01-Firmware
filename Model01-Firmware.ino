@@ -125,9 +125,8 @@ Keymap keymap {layers, arraySize(layers)};
 // ================================================================================
 // keyboard, reporter, controller
 hardware::Keyboard keyboard;
-hid::keyboard::Dispatcher dispatcher;
 
-Controller controller {keymap, keyboard, dispatcher};
+Controller controller {keymap, keyboard};
 // --------------------------------------------------------------------------------
 
 

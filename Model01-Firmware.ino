@@ -95,9 +95,9 @@ Key numpad_keys[] = KEYMAP_STACKED(
     ___, ___, ___, ___, ___, ___, XXX,
     ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___, ___,
-    ___, ___, ___, ___, ___, ___, ___,
+    ___, ___, ___, cConsumerKey::VolumeIncrement, cConsumerKey::VolumeDecrement, ___, ___,
 
-    Key_A, Key_A, ___, ___,
+    Key_A, Key_A, KeyboardKey(0x04, 0b0010), ___,
     ___,
 
 

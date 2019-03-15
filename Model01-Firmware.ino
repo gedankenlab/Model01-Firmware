@@ -18,7 +18,7 @@
 #include <kaleidoglyph/led/SolidColor.h>
 #include <kaleidoglyph/led/Breathe.h>
 #include <kaleidoglyph/led/Rainbow.h>
-
+#include <kaleidoglyph/cKey/system.h>
 
 // Maybe it's fine to just have a using directive here instead:
 // using namespace kaleidoglyph;
@@ -97,7 +97,7 @@ Key numpad_keys[] = KEYMAP_STACKED(
     ___, ___, ___, ___, ___, ___, ___,
     ___, ___, ___, cConsumerKey::VolumeIncrement, cConsumerKey::VolumeDecrement, ___, ___,
 
-    Key_A, Key_A, KeyboardKey(0x04, 0b0010), ___,
+    Key_A, Key_A, KeyboardKey(0x04, 0b0010), cSystemKey::Sleep,
     ___,
 
 

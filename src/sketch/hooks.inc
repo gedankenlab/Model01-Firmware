@@ -30,10 +30,10 @@ extern glukeys::Plugin   glukeys;
 }
 
 void toggleHidProtocol() {
-  keyboard.detachFromHost();
+  controller.detachFromHost();
   dispatcher.toggleProtocol();
   delay(1000);
-  keyboard.attachToHost();
+  controller.attachToHost();
 }
 
 namespace hooks {

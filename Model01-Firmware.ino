@@ -147,7 +147,7 @@ LedBreatheMode breathe_mode{170};
 LedRainbowMode rainbow_mode;
 LedRainbowWaveMode rainbow_wave_mode;
 
-LedBackgroundMode* led_modes[] = {
+LedBackgroundMode* const led_modes[] = {
   &dim_blue_background,
   &breathe_mode,
   &rainbow_mode,

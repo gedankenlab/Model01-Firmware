@@ -112,7 +112,7 @@ Key numpad_keys[] = KEYMAP_STACKED(
 
 Layer numpad {numpad_keys, arraySize(numpad_keys)};
 
-Layer* layers[] = {
+Layer* const layers[] = {
   &qwerty,
   &numpad,
 };

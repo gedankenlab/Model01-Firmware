@@ -27,10 +27,12 @@ namespace kaleidoglyph {
 
 namespace qukeys {
 
+const PROGMEM
 Qukey qukey_defs[] = {
   {Key_F, Key_LeftShift},
   {Key_D, Key_LeftControl},
-  {Key_M, KeyboardKey(0x10, 0b0010)}
+  {Key_M, KeyboardKey(0x10, 0b0010)},
+  {Key_E, LayerKey{1, true}},
 };
 
 byte qukey_count = arraySize(qukey_defs);
@@ -69,7 +71,7 @@ byte glukey_count = arraySize(glukey_defs);
 const PROGMEM
 Key qwerty_keys[] = KEYMAP_STACKED(
     ___,          Key_1, Key_2, Key_3, Key_4, Key_5, cLedKey::next_mode,
-    glukeys::GlukeysKey(0), Key_Q, Key_W, Key_E, Key_R, Key_T,
+    glukeys::GlukeysKey(0), Key_Q, Key_W, qukeys::QukeysKey(3), Key_R, Key_T,
     glukeys::GlukeysKey(1), Key_A, Key_S, qukeys::QukeysKey(1), qukeys::QukeysKey(0), Key_G, Key_Tab,
     glukeys::cGlukey::meta, Key_Z, Key_X, unshifter::UnshifterKey(1), unshifter::UnshifterKey(0), Key_B, glukeys::cGlukey::cancel,
 
@@ -117,7 +119,7 @@ Layer* const layers[] = {
   &numpad,
 };
 
-Keymap keymap {layers, arraySize(layers)};
+Keymap keymap {layers};
 // End keymap definition
 // --------------------------------------------------------------------------------
 

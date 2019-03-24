@@ -46,8 +46,6 @@ Unkey unkey_defs[] = {
   {KeyboardKey(0x06, 0b0010), Key_T},
 };
 
-byte unkey_count = arraySize(unkey_defs);
-
 } // namespace unshifter {
 
 
@@ -59,8 +57,6 @@ Key glukey_defs[] = {
   Key_RightShift,
   LayerKey{1, true},
 };
-
-byte glukey_count = arraySize(glukey_defs);
 
 } // namespace qukeys {
 
@@ -88,7 +84,7 @@ Key qwerty_keys[] = KEYMAP_STACKED(
     LayerKey(1)
 );
 
-Layer qwerty {qwerty_keys, arraySize(qwerty_keys)};
+Layer qwerty {qwerty_keys};
 
 const PROGMEM
 Key numpad_keys[] = KEYMAP_STACKED(
@@ -110,7 +106,7 @@ Key numpad_keys[] = KEYMAP_STACKED(
     ___
 );
 
-Layer numpad {numpad_keys, arraySize(numpad_keys)};
+Layer numpad {numpad_keys};
 
 Layer* const layers[] = {
   &qwerty,
@@ -134,8 +130,8 @@ Controller controller {keymap, keyboard};
 // Plugins
 namespace plugin {
 qukeys::Plugin    qukeys    {qukeys::qukey_defs, keymap, controller};
-unshifter::Plugin unshifter {unshifter::unkey_defs, unshifter::unkey_count};
-glukeys::Plugin   glukeys   {glukeys::glukey_defs, glukeys::glukey_count, controller};
+unshifter::Plugin unshifter {unshifter::unkey_defs};
+glukeys::Plugin   glukeys   {glukeys::glukey_defs, controller};
 }
 
 namespace plugin {

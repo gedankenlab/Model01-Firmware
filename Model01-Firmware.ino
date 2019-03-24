@@ -14,6 +14,7 @@
 #include <Kaleidoglyph-Qukeys.h>
 #include <Kaleidoglyph-Unshifter.h>
 #include <Kaleidoglyph-Glukeys.h>
+#include <Kaleidoglyph-Macros.h>
 // --------------------------------------------------------------------------------
 #include <kaleidoglyph/led/SolidColor.h>
 #include <kaleidoglyph/led/Breathe.h>
@@ -49,7 +50,7 @@ Unkey unkey_defs[] = {
 } // namespace unshifter {
 
 
-namespace glukeys{
+namespace glukeys {
 
 const PROGMEM
 Key glukey_defs[] = {
@@ -58,7 +59,25 @@ Key glukey_defs[] = {
   LayerKey{1, true},
 };
 
-} // namespace qukeys {
+} // namespace glukeys {
+
+
+namespace macros {
+
+enum class MacroAction : byte {
+  hello,
+};
+
+Key handleMacro(byte index) {
+  switch (MacroAction(index)) {
+    case MacroAction::hello:
+      Serial.println(F("Hello, world!"));
+      return cKey::clear;
+  }
+  return cKey::clear;
+}
+
+} // namespace macros {
 
 // ================================================================================
 // Keymap definition
@@ -74,7 +93,7 @@ Key qwerty_keys[] = KEYMAP_STACKED(
     LayerKey(1, 1),
 
 
-    XXX,          Key_6, Key_7, Key_8,     Key_9,      Key_0,         XXX,
+    macros::MacrosKey(0), Key_6, Key_7, Key_8,     Key_9,      Key_0,         XXX,
                   Key_Y, Key_U, Key_I,     Key_O,      Key_P,         Key_Equals,
     Key_Enter,    Key_H, Key_J, Key_K,     Key_L,      Key_Semicolon, Key_Quote,
     Key_RightAlt, Key_N, qukeys::QukeysKey(2), Key_Comma, Key_Period, Key_Slash,     Key_Minus,
@@ -132,6 +151,7 @@ namespace plugin {
 qukeys::Plugin    qukeys    {qukeys::qukey_defs, keymap, controller};
 unshifter::Plugin unshifter {unshifter::unkey_defs};
 glukeys::Plugin   glukeys   {glukeys::glukey_defs, controller};
+macros::Plugin    macros    {controller};
 }
 
 namespace plugin {

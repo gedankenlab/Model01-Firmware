@@ -93,6 +93,8 @@ EventHandlerResult onKeyEvent(byte id, KeyEvent& event) {
       return plugin::unshifter.onKeyEvent(event);
     case KeyEventHandlerId::glukeys:
       return plugin::glukeys.onKeyEvent(event);
+    case KeyEventHandlerId::macros:
+      return plugin::macros.onKeyEvent(event);
     case KeyEventHandlerId::led_controller:
       return led_controller.onKeyEvent(event);
     default:

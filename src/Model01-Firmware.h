@@ -15,3 +15,5 @@
 #define CONTROLLER_CONSTANTS_H <sketch/controller-constants.h>
 
 //#define QUKEYS_CONSTANTS_H <sketch/qukeys-constants.h>
+
+//#define KALEIDOGLYPH_MACROS_INC <sketch/macros.inc>

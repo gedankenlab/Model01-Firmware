@@ -18,7 +18,8 @@ class KeyEventHandlerId {
   static constexpr byte led_controller = 0;
   static constexpr byte unshifter      = 1;
   static constexpr byte glukeys        = 2;
-  static constexpr byte count          = 3;
+  static constexpr byte macros         = 3;
+  static constexpr byte count          = 4;
 };
 
 }

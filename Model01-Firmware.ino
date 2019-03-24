@@ -35,8 +35,6 @@ Qukey qukey_defs[] = {
   {Key_E, LayerKey{1, true}},
 };
 
-byte qukey_count = arraySize(qukey_defs);
-
 } // namespace qukeys {
 
 
@@ -135,7 +133,7 @@ Controller controller {keymap, keyboard};
 // ================================================================================
 // Plugins
 namespace plugin {
-qukeys::Plugin    qukeys    {qukeys::qukey_defs, qukeys::qukey_count, keymap, controller};
+qukeys::Plugin    qukeys    {qukeys::qukey_defs, keymap, controller};
 unshifter::Plugin unshifter {unshifter::unkey_defs, unshifter::unkey_count};
 glukeys::Plugin   glukeys   {glukeys::glukey_defs, glukeys::glukey_count, controller};
 }

@@ -62,23 +62,6 @@ Key glukey_defs[] = {
 } // namespace glukeys {
 
 
-namespace macros {
-
-enum class MacroAction : byte {
-  hello,
-};
-
-Key handleMacro(byte index) {
-  switch (MacroAction(index)) {
-    case MacroAction::hello:
-      Serial.println(F("Hello, world!"));
-      return cKey::clear;
-  }
-  return cKey::clear;
-}
-
-} // namespace macros {
-
 // ================================================================================
 // Keymap definition
 const PROGMEM
@@ -153,6 +136,24 @@ unshifter::Plugin unshifter {unshifter::unkey_defs};
 glukeys::Plugin   glukeys   {glukeys::glukey_defs, controller};
 macros::Plugin    macros    {controller};
 }
+
+namespace macros {
+
+enum class MacroAction : byte {
+  hello,
+};
+
+Key handleMacro(byte index, KeyAddr k) {
+  switch (MacroAction(index)) {
+    case MacroAction::hello:
+      plugin::macros.typeProgmemString(PSTR("Hello, world!"), k);
+      Serial.println(F("Hello, world!"));
+      return cKey::clear;
+  }
+  return cKey::clear;
+}
+
+} // namespace macros {
 
 namespace plugin {
 glukeys::LedMode glukeys_led_mode{glukeys};

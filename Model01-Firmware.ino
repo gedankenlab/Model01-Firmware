@@ -8,6 +8,7 @@
 
 
 #include <Kaleidoglyph.h>
+#include <kaleidoglyph/utils.h>
 
 // ================================================================================
 // These includes should be added by the pre-build script
@@ -110,6 +111,7 @@ Key numpad_keys[] = KEYMAP_STACKED(
 
 Layer numpad {numpad_keys};
 
+PROGMEM
 Layer* const layers[] = {
   &qwerty,
   &numpad,
@@ -163,6 +165,7 @@ LedBreatheMode breathe_mode{170};
 LedRainbowMode rainbow_mode;
 LedRainbowWaveMode rainbow_wave_mode;
 
+PROGMEM
 LedBackgroundMode* const led_modes[] = {
   &dim_blue_background,
   &breathe_mode,
@@ -170,7 +173,7 @@ LedBackgroundMode* const led_modes[] = {
   &rainbow_wave_mode,
 };
 
-LedController led_controller {controller, keyboard, led_modes, arraySize(led_modes)};
+LedController led_controller {led_modes, controller, keyboard};
 
 } // namespace kaleidoglyph {
 
@@ -205,7 +208,7 @@ void setup() {
 #endif
 
   kaleidoglyph::controller.init();
-  //kaleidoglyph::testLeds();
+
   kaleidoglyph::led_controller.setActiveMode(3);
 
 }

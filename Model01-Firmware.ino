@@ -147,7 +147,6 @@ Key handleMacro(byte index, KeyAddr k) {
   switch (MacroAction(index)) {
     case MacroAction::hello:
       plugin::macros.typeProgmemString(PSTR("Hello, world!"), k);
-      Serial.println(F("Hello, world!"));
       return cKey::clear;
   }
   return cKey::clear;

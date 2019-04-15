@@ -35,6 +35,7 @@ Qukey qukey_defs[] = {
   {Key_D, Key_LeftControl},
   {Key_M, KeyboardKey(0x10, 0b0010)},
   {Key_E, LayerKey{1, true}},
+  {Key_LeftShift, Key_Q},
 };
 
 } // namespace qukeys {
@@ -72,7 +73,7 @@ Key qwerty_keys[] = KEYMAP_STACKED(
     glukeys::GlukeysKey(1), Key_A, Key_S, qukeys::QukeysKey(1), qukeys::QukeysKey(0), Key_G, Key_Tab,
     glukeys::cGlukey::meta, Key_Z, Key_X, unshifter::UnshifterKey(1), unshifter::UnshifterKey(0), Key_B, glukeys::cGlukey::cancel,
 
-    glukeys::glukeysModifierKey(1), Key_Backspace, Key_LeftGui, glukeys::GlukeysKey(2),
+    glukeys::glukeysModifierKey(1), Key_Backspace, qukeys::QukeysKey(4), glukeys::GlukeysKey(2),
     //Key_LeftControl, Key_Backspace, Key_LeftGui, glukeys::GlukeysKey(2),
     LayerKey(1, 1),
 
@@ -210,6 +211,8 @@ void setup() {
   kaleidoglyph::controller.init();
 
   kaleidoglyph::led_controller.setActiveMode(3);
+
+  kaleidoglyph::plugin::qukeys.setMinimumOverlap(50);
 
 }
 

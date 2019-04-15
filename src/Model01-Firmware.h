@@ -8,8 +8,10 @@
 // Type `KeyEventHandlerId`, used by the controller and `onKeyEvent` master hook function:
 #define KALEIDOGLYPH_KEY_EVENT_HANDLER_ID_H <sketch/KeyEventHandlerId.h>
 
-
-
+// Type `EventHandlerId`, used for handling keyswitch events. Maybe it should be
+// `KeyswitchEventHandlerId`, but that name is awfully long, and it's fine to
+// assign an ID to each plugin that could be used for other things as well.
+#define KALEIDOGLYPH_EVENT_HANDLER_ID_H <sketch/EventHandlerId.h>
 
 
 #define CONTROLLER_CONSTANTS_H <sketch/controller-constants.h>

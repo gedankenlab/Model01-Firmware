@@ -18,7 +18,7 @@
 #include <Kaleidoglyph-Unshifter.h>
 
 #include "sketch/KeyEventHandlerId.h"
-#include "sketch/PluginId.h"
+#include <kaleidoglyph/EventHandlerId.h>
 
 
 namespace kaleidoglyph {
@@ -73,13 +73,13 @@ EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
     // is next in the order (it probably doesn't know anything about what other plugins
     // are included), so it can only call `onKeyswitchEvent()` with itself (or the
     // controller) as `event.caller`.
-    case byte(PluginId::controller):
+    case EventHandlerId::controller:
       result = plugin::qukeys.onKeyswitchEvent(event);
       if (result == EventHandlerResult::abort) {
         return result;
       }
       // no break here; we deliberately fall through to the next plugin
-    case byte(PluginId::qukeys):
+    case EventHandlerId::qukeys:
       // no break here; we deliberately fall through to the next plugin
     default:
       return EventHandlerResult::proceed;

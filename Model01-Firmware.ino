@@ -179,9 +179,9 @@ static byte updater_buffer[max_updater_size] = {};
 const LedModeLoader pgm_led_mode_loaders[] PROGMEM = {
     {&dim_blue_background,
      loadLedModeUpdater<decltype(dim_blue_background)>},
-    // {&breathe_mode, loadLedModeUpdater<decltype(breathe_mode), &updater_buffer>},
-    // {&rainbow_mode, loadLedModeUpdater<decltype(rainbow_mode), &updater_buffer>},
-    // {&rainbow_wave_mode, loadLedModeUpdater<decltype(rainbow_wave_mode), &updater_buffer>},
+    {&breathe_mode, loadLedModeUpdater<decltype(breathe_mode)>},
+    {&rainbow_mode, loadLedModeUpdater<decltype(rainbow_mode)>},
+    {&rainbow_wave_mode, loadLedModeUpdater<decltype(rainbow_wave_mode)>},
 };
 
 // create LED manager
@@ -221,7 +221,7 @@ void setup() {
 
   kaleidoglyph::controller.init();
 
-  kaleidoglyph::led_manager.setActiveMode(3);
+  kaleidoglyph::led_manager.setActiveMode(0);
 
   kaleidoglyph::plugin::qukeys.setMinimumOverlap(10);
 

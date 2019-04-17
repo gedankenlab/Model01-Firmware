@@ -19,6 +19,7 @@
 
 #include "sketch/KeyEventHandlerId.h"
 #include <kaleidoglyph/EventHandlerId.h>
+#include <kaleidoglyph/led/LedController.h>
 
 
 namespace kaleidoglyph {
@@ -40,17 +41,17 @@ namespace hooks {
 
 /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
 void preKeyswitchScan() {
-  led_controller.preKeyswitchScan();
+  led_manager.preKeyswitchScan();
   plugin::qukeys.preKeyswitchScan();
   plugin::glukeys.preKeyswitchScan();
 }
 
 void setLedForeground(KeyAddr k) {
-  led_controller.setForeground(k);
+  led_manager.setForeground(k);
 }
 
-bool setForegroundColor(KeyAddr k, LedController& led_controller) {
-  if ( plugin::glukeys_led_mode.setForegroundColor(k, led_controller) ) {
+bool setForegroundColor(KeyAddr k) {
+  if ( plugin::glukeys_led_mode.setForegroundColor(k) ) {
     return true;
   }
   return false;
@@ -95,8 +96,8 @@ EventHandlerResult onKeyEvent(byte id, KeyEvent& event) {
       return plugin::glukeys.onKeyEvent(event);
     case KeyEventHandlerId::macros:
       return plugin::macros.onKeyEvent(event);
-    case KeyEventHandlerId::led_controller:
-      return led_controller.onKeyEvent(event);
+    case KeyEventHandlerId::led_manager:
+      return led_manager.onKeyEvent(event);
     default:
       return EventHandlerResult::nxplugin;
   }

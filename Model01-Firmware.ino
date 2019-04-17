@@ -161,20 +161,31 @@ namespace plugin {
 glukeys::LedMode glukeys_led_mode{glukeys};
 }
 
+// define LED mode objects
 LedSolidColorMode dim_blue_background{Color(0, 0, 100)};
 LedBreatheMode breathe_mode{170};
 LedRainbowMode rainbow_mode;
 LedRainbowWaveMode rainbow_wave_mode;
 
-PROGMEM
-LedBackgroundMode* const led_modes[] = {
-  &dim_blue_background,
-  &breathe_mode,
-  &rainbow_mode,
-  &rainbow_wave_mode,
+// calculate the biggest updater footprint
+constexpr byte max_updater_size = MaxUpdaterSize<decltype(dim_blue_background),
+                                                 decltype(breathe_mode),
+                                                 decltype(rainbow_mode),
+                                                 decltype(rainbow_wave_mode)>::value;
+// allocate memory for the active updater
+static byte updater_buffer[max_updater_size] = {};
+
+// create array of updater factories("loaders")
+const LedModeLoader pgm_led_mode_loaders[] PROGMEM = {
+    {&dim_blue_background,
+     loadLedModeUpdater<decltype(dim_blue_background)>},
+    // {&breathe_mode, loadLedModeUpdater<decltype(breathe_mode), &updater_buffer>},
+    // {&rainbow_mode, loadLedModeUpdater<decltype(rainbow_mode), &updater_buffer>},
+    // {&rainbow_wave_mode, loadLedModeUpdater<decltype(rainbow_wave_mode), &updater_buffer>},
 };
 
-LedController led_controller {led_modes, controller, keyboard};
+// create LED manager
+LedManager led_manager{pgm_led_mode_loaders, updater_buffer, keyboard};
 
 } // namespace kaleidoglyph {
 
@@ -210,9 +221,9 @@ void setup() {
 
   kaleidoglyph::controller.init();
 
-  kaleidoglyph::led_controller.setActiveMode(3);
+  kaleidoglyph::led_manager.setActiveMode(3);
 
-  kaleidoglyph::plugin::qukeys.setMinimumOverlap(50);
+  kaleidoglyph::plugin::qukeys.setMinimumOverlap(10);
 
 }
 

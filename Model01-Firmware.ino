@@ -13,14 +13,21 @@
 // ================================================================================
 // These includes should be added by the pre-build script
 #include <Kaleidoglyph-Qukeys.h>
-#include <Kaleidoglyph-Unshifter.h>
 #include <Kaleidoglyph-Glukeys.h>
+#include <Kaleidoglyph-Unshifter.h>
 #include <Kaleidoglyph-Macros.h>
 // --------------------------------------------------------------------------------
 #include <kaleidoglyph/led/SolidColor.h>
 #include <kaleidoglyph/led/Breathe.h>
 #include <kaleidoglyph/led/Rainbow.h>
 #include <kaleidoglyph/cKey/system.h>
+
+#define KK(X) cKeyboardKey::X
+#define CK(X) cConsumerKey::X
+#define SK(X) cSystemKey::X
+#define QK(N) qukeys::QukeysKey(N)
+#define GK(N) glukeys::GlukeysKey(N)
+#define MK(N) macros::MacrosKey(N)
 
 // Maybe it's fine to just have a using directive here instead:
 // using namespace kaleidoglyph;
@@ -31,8 +38,19 @@ namespace qukeys {
 
 const PROGMEM
 Qukey qukey_defs[] = {
-  {Key_F, Key_LeftShift},
+  {Key_A, Key_LeftGui},
+  {Key_S, Key_LeftAlt},
   {Key_D, Key_LeftControl},
+  {Key_F, Key_LeftShift},
+  {Key_J, Key_RightShift},
+  {Key_K, Key_LeftControl},
+  {Key_L, Key_LeftAlt},
+  {Key_Semicolon, Key_LeftGui},
+  {glukeys::cGlukey::cancel, cKey::blank},
+  {KK(LeftShift), KK(LeftParen)},
+  {KK(RightShift), KK(RightParen)},
+  {Key_Spacebar, cKey::blank},
+
   {Key_M, KeyboardKey(0x10, 0b0010)},
   {Key_E, LayerKey{1, true}},
   {Key_LeftShift, Key_Q},
@@ -56,69 +74,98 @@ namespace glukeys {
 
 const PROGMEM
 Key glukey_defs[] = {
+  LayerKey{1, true},
   Key_LeftShift,
   Key_RightShift,
-  LayerKey{1, true},
 };
 
 } // namespace glukeys {
 
+enum MacroAction : byte {
+  any,
+  version,
+  hello,
+};
 
 // ================================================================================
 // Keymap definition
 const PROGMEM
-Key qwerty_keys[] = KEYMAP_STACKED(
-    ___,          Key_1, Key_2, Key_3, Key_4, Key_5, cLedKey::next_mode,
-    glukeys::GlukeysKey(0), Key_Q, Key_W, qukeys::QukeysKey(3), Key_R, Key_T,
-    glukeys::GlukeysKey(1), Key_A, Key_S, qukeys::QukeysKey(1), qukeys::QukeysKey(0), Key_G, Key_Tab,
-    glukeys::cGlukey::meta, Key_Z, Key_X, unshifter::UnshifterKey(1), unshifter::UnshifterKey(0), Key_B, glukeys::cGlukey::cancel,
+Key qwerty_layer_keys[] = KEYMAP_STACKED(
+    QK(8),        Key_1, Key_2, Key_3, Key_4, Key_5, cLedKey::next_mode,
+    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T,
+    Key_PageUp,   QK(0), QK(1), QK(2), QK(3), Key_G, Key_Tab,
+    Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
 
-    glukeys::glukeysModifierKey(1), Key_Backspace, qukeys::QukeysKey(4), glukeys::GlukeysKey(2),
+    Key_LeftControl, Key_Backspace, Key_LeftGui, QK(9),
+    //glukeys::glukeysModifierKey(1), Key_Backspace, qukeys::QukeysKey(4), glukeys::GlukeysKey(2),
     //Key_LeftControl, Key_Backspace, Key_LeftGui, glukeys::GlukeysKey(2),
-    LayerKey(1, 1),
+    LayerKey(2, true),
 
 
-    macros::MacrosKey(0), Key_6, Key_7, Key_8,     Key_9,      Key_0,         XXX,
-                  Key_Y, Key_U, Key_I,     Key_O,      Key_P,         Key_Equals,
-    Key_Enter,    Key_H, Key_J, Key_K,     Key_L,      Key_Semicolon, Key_Quote,
-    Key_RightAlt, Key_N, qukeys::QukeysKey(2), Key_Comma, Key_Period, Key_Slash,     Key_Minus,
+    MK(MacroAction::any), Key_6, Key_7, Key_8,     Key_9,      Key_0,     LayerKey(1),
+                          Key_Y, Key_U, Key_I,     Key_O,      Key_P,     Key_Equals,
+    Key_Enter,            Key_H, QK(4), QK(5),     QK(6),      QK(7),     Key_Quote,
+    Key_RightAlt,         Key_N, Key_M, Key_Comma, Key_Period, Key_Slash, Key_Minus,
 
-    Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
+    QK(10), Key_LeftAlt, Key_Spacebar, Key_RightControl,
     //glukeys::glukeysModifierKey(Key_RightShift), Key_LeftAlt, Key_Spacebar, Key_RightControl,
-    LayerKey(1)
+    LayerKey(2, true)
 );
 
-Layer qwerty {qwerty_keys};
+Layer qwerty_layer{qwerty_layer_keys};
 
 const PROGMEM
-Key numpad_keys[] = KEYMAP_STACKED(
-    ___, ___, ___, ___, ___, ___, XXX,
+Key numpad_layer_keys[] = KEYMAP_STACKED(
+    ___, ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___, ___,
-    ___, ___, ___, cConsumerKey::VolumeIncrement, cConsumerKey::VolumeDecrement, ___, ___,
+    ___, ___, ___, ___, ___, ___, ___,
 
-    Key_A, Key_A, KeyboardKey(0x04, 0b0010), cSystemKey::Sleep,
+    ___, ___, ___, ___,
     ___,
 
 
-    XXX, ___, Key_7, Key_8, Key_9, ___, XXX,
-         ___, Key_4, Key_5, Key_6, ___, ___,
-    ___, ___, Key_1, Key_2, Key_3, ___, ___,
-    ___, ___, Key_0, ___,   ___,   ___, ___,
+    MK(MacroAction::version), ___, Key_7, Key_8,      Key_9,              Key_KeypadSubtract, ___,
+                              ___, Key_4, Key_5,      Key_6,              Key_KeypadAdd,      ___,
+    ___,                      ___, Key_1, Key_2,      Key_3,              Key_Equals,         ___,
+    ___,                      ___, Key_0, Key_Period, Key_KeypadMultiply, Key_KeypadDivide,   Key_Enter,
 
     ___, ___, ___, ___,
     ___
 );
 
-Layer numpad {numpad_keys};
+Layer numpad_layer{numpad_layer_keys};
+
+const PROGMEM
+Key function_layer_keys[] = KEYMAP_STACKED(
+    QK(11),   Key_F1,          Key_F2,        Key_F3,         Key_F4, Key_F5, Key_CapsLock,
+    Key_Tab,  ___,             Key_UpArrow,   ___,            XXX,    XXX,
+    Key_Home, Key_LeftArrow,   Key_DownArrow, Key_RightArrow, XXX,    XXX,    XXX,
+    Key_End,  Key_PrintScreen, Key_Insert,    ___,            XXX,    XXX,    XXX,
+
+    ___, Key_Delete, ___, ___,
+    ___,
+
+
+    CK(ScanPreviousTrack), Key_F6,             Key_F7,              Key_F8,              Key_F9,          Key_F10,       Key_F11,
+                           CK(ScanNextTrack),  KK(LeftCurlyBrace),  KK(RightCurlyBrace), KK(LeftBracket), KK(RightBracket), KK(F12),
+    CK(PlaySlashPause),    KK(LeftArrow),      KK(DownArrow),       KK(UpArrow),         KK(RightArrow),  ___,           ___,
+    Key_PcApplication,     CK(Mute),           CK(VolumeDecrement), CK(VolumeIncrement), ___,             KK(Backslash), KK(Pipe),
+
+    ___, ___, KK(Enter), ___,
+    ___
+);
+
+Layer function_layer{function_layer_keys};
 
 PROGMEM
 Layer* const layers[] = {
-  &qwerty,
-  &numpad,
+  &qwerty_layer,
+  &numpad_layer,
+  &function_layer,
 };
 
-Keymap keymap {layers};
+Keymap keymap{layers};
 // End keymap definition
 // --------------------------------------------------------------------------------
 
@@ -127,7 +174,7 @@ Keymap keymap {layers};
 // keyboard, reporter, controller
 hardware::Keyboard keyboard;
 
-Controller controller {keymap, keyboard};
+Controller controller{keymap, keyboard};
 // --------------------------------------------------------------------------------
 
 
@@ -142,12 +189,23 @@ macros::Plugin    macros    {controller};
 
 namespace macros {
 
-enum class MacroAction : byte {
-  hello,
-};
+void typeVersionInfo(KeyAddr k) {
+  plugin::macros.typeProgmemString(PSTR("Keyboardio Model 01 - Kaleidoglyph "), k);
+  plugin::macros.typeProgmemString(PSTR("locally built"), k);
+}
+
+Key randomKey() {
+  byte new_keycode = cKeyboardKey::A.keycode() + byte(Controller::scanStartTime() % 36);
+  return KeyboardKey{new_keycode};
+}
 
 Key handleMacro(byte index, KeyAddr k) {
   switch (MacroAction(index)) {
+    case MacroAction::any:
+      return randomKey();
+    case MacroAction::version:
+      typeVersionInfo(k);
+      return cKey::clear;
     case MacroAction::hello:
       plugin::macros.typeProgmemString(PSTR("Hello, world!"), k);
       return cKey::clear;
@@ -223,7 +281,7 @@ void setup() {
 
   kaleidoglyph::led_manager.setActiveMode(0);
 
-  kaleidoglyph::plugin::qukeys.setMinimumOverlap(10);
+  kaleidoglyph::plugin::qukeys.setMinimumOverlap(50);
 
 }
 

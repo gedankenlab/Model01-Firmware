@@ -16,6 +16,7 @@
 #include <Kaleidoglyph-Glukeys.h>
 #include <Kaleidoglyph-Unshifter.h>
 #include <Kaleidoglyph-Macros.h>
+#include <Kaleidoglyph-Squeakeys.h>
 // --------------------------------------------------------------------------------
 #include <kaleidoglyph/led/SolidColor.h>
 #include <kaleidoglyph/led/Breathe.h>
@@ -139,9 +140,9 @@ Layer numpad_layer{numpad_layer_keys};
 const PROGMEM
 Key function_layer_keys[] = KEYMAP_STACKED(
     QK(11),   Key_F1,          Key_F2,        Key_F3,         Key_F4, Key_F5, Key_CapsLock,
-    Key_Tab,  ___,             Key_UpArrow,   ___,            XXX,    XXX,
-    Key_Home, Key_LeftArrow,   Key_DownArrow, Key_RightArrow, XXX,    XXX,    XXX,
-    Key_End,  Key_PrintScreen, Key_Insert,    ___,            XXX,    XXX,    XXX,
+    Key_Tab,  ___,             Key_MouseUp,   ___,            Key_MouseButtonRight,  Key_MouseWarpEnd,
+    Key_Home, Key_MouseLeft,   Key_MouseDown, Key_MouseRight, Key_MouseButtonLeft,   Key_MouseWarpNW,  Key_MouseWarpNE,
+    Key_End,  Key_PrintScreen, Key_Insert,    ___,            Key_MouseButtonMiddle, Key_MouseWarpSW, Key_MouseWarpSE,
 
     ___, Key_Delete, ___, ___,
     ___,
@@ -185,6 +186,7 @@ qukeys::Plugin    qukeys    {qukeys::qukey_defs, keymap, controller};
 unshifter::Plugin unshifter {unshifter::unkey_defs};
 glukeys::Plugin   glukeys   {glukeys::glukey_defs, controller};
 macros::Plugin    macros    {controller};
+squeakeys::SqueakeysHandler squeakeys{controller};
 }
 
 namespace macros {
@@ -282,7 +284,6 @@ void setup() {
   kaleidoglyph::led_manager.setActiveMode(0);
 
   kaleidoglyph::plugin::qukeys.setMinimumOverlap(50);
-
 }
 
 void loop() {

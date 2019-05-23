@@ -19,6 +19,7 @@ enum class EventHandlerId : byte {
   unshifter,
   glukeys,
   macros,
+  squeakeys,
 };
 
 }

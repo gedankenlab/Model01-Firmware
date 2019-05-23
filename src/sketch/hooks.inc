@@ -28,6 +28,8 @@ namespace plugin {
 extern qukeys::Plugin    qukeys;
 extern unshifter::Plugin unshifter;
 extern glukeys::Plugin   glukeys;
+extern macros::Plugin    macros;
+extern squeakeys::SqueakeysHandler squeakeys;
 }
 
 void toggleHidProtocol() {
@@ -44,6 +46,7 @@ void preKeyswitchScan() {
   led_manager.preKeyswitchScan();
   plugin::qukeys.preKeyswitchScan();
   plugin::glukeys.preKeyswitchScan();
+  plugin::squeakeys.preKeyswitchScan();
 }
 
 void setLedForeground(KeyAddr k) {
@@ -96,6 +99,8 @@ EventHandlerResult onKeyEvent(byte id, KeyEvent& event) {
       return plugin::glukeys.onKeyEvent(event);
     case KeyEventHandlerId::macros:
       return plugin::macros.onKeyEvent(event);
+    case KeyEventHandlerId::squeakeys:
+      return plugin::squeakeys.onKeyEvent(event);
     case KeyEventHandlerId::led_manager:
       return led_manager.onKeyEvent(event);
     default:

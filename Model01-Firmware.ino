@@ -160,12 +160,14 @@ Key handleMacro(byte index, KeyAddr k) {
 
 // define LED mode objects
 LedSolidColorMode dim_blue_background{Color(0, 0, 100)};
+LedSolidColorMode dim_green_background{Color(0, 100, 0)};
 LedBreatheMode breathe_mode{170};
 LedRainbowMode rainbow_mode;
 LedRainbowWaveMode rainbow_wave_mode;
 
 // calculate the biggest updater footprint
 constexpr byte max_updater_size = MaxUpdaterSize<decltype(dim_blue_background),
+                                                 decltype(dim_green_background),
                                                  decltype(breathe_mode),
                                                  decltype(rainbow_mode),
                                                  decltype(rainbow_wave_mode)>::value;
@@ -176,6 +178,8 @@ static byte updater_buffer[max_updater_size] = {};
 const LedModeLoader pgm_led_mode_loaders[] PROGMEM = {
     {&dim_blue_background,
      loadLedModeUpdater<decltype(dim_blue_background)>},
+    {&dim_green_background,
+     loadLedModeUpdater<decltype(dim_green_background)>},
     {&breathe_mode, loadLedModeUpdater<decltype(breathe_mode)>},
     {&rainbow_mode, loadLedModeUpdater<decltype(rainbow_mode)>},
     {&rainbow_wave_mode, loadLedModeUpdater<decltype(rainbow_wave_mode)>},

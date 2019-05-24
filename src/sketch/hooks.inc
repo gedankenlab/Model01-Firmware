@@ -14,9 +14,6 @@
 #include <kaleidoglyph/KeyEvent.h>
 #include <kaleidoglyph/hid/keyboard.h>
 
-#include <Kaleidoglyph-Qukeys.h>
-#include <Kaleidoglyph-Unshifter.h>
-
 #include "sketch/KeyEventHandlerId.h"
 #include <kaleidoglyph/EventHandlerId.h>
 #include <kaleidoglyph/led/LedController.h>
@@ -25,9 +22,6 @@
 namespace kaleidoglyph {
 
 namespace plugin {
-extern qukeys::Plugin    qukeys;
-extern unshifter::Plugin unshifter;
-extern glukeys::Plugin   glukeys;
 extern macros::Plugin    macros;
 extern squeakeys::SqueakeysHandler squeakeys;
 }
@@ -44,8 +38,6 @@ namespace hooks {
 /// Call pre-keyswitch-scan hooks (run every cycle, before keyswitches are scanned)
 void preKeyswitchScan() {
   led_manager.preKeyswitchScan();
-  plugin::qukeys.preKeyswitchScan();
-  plugin::glukeys.preKeyswitchScan();
   plugin::squeakeys.preKeyswitchScan();
 }
 
@@ -53,10 +45,7 @@ void setLedForeground(KeyAddr k) {
   led_manager.setForeground(k);
 }
 
-bool setForegroundColor(KeyAddr k) {
-  if ( plugin::glukeys_led_mode.setForegroundColor(k) ) {
-    return true;
-  }
+bool setForegroundColor(KeyAddr /*k*/) {
   return false;
 }
 
@@ -67,7 +56,7 @@ EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
     toggleHidProtocol();
     return EventHandlerResult::abort;
   }
-  EventHandlerResult result;
+
   switch (event.caller) {
     // This looks a bit odd, because the code for each plugin *precedes* its case
     // label. That's because they're ordered, so if Plugin A is the `event.caller`
@@ -78,12 +67,6 @@ EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
     // are included), so it can only call `onKeyswitchEvent()` with itself (or the
     // controller) as `event.caller`.
     case EventHandlerId::controller:
-      result = plugin::qukeys.onKeyswitchEvent(event);
-      if (result == EventHandlerResult::abort) {
-        return result;
-      }
-      // no break here; we deliberately fall through to the next plugin
-    case EventHandlerId::qukeys:
       // no break here; we deliberately fall through to the next plugin
     default:
       return EventHandlerResult::proceed;
@@ -93,10 +76,6 @@ EventHandlerResult onKeyswitchEvent(KeyEvent& event) {
 /// Order doesn't matter here
 EventHandlerResult onKeyEvent(byte id, KeyEvent& event) {
   switch (id) {
-    case KeyEventHandlerId::unshifter:
-      return plugin::unshifter.onKeyEvent(event);
-    case KeyEventHandlerId::glukeys:
-      return plugin::glukeys.onKeyEvent(event);
     case KeyEventHandlerId::macros:
       return plugin::macros.onKeyEvent(event);
     case KeyEventHandlerId::squeakeys:
@@ -109,15 +88,12 @@ EventHandlerResult onKeyEvent(byte id, KeyEvent& event) {
 }
 
 /// Call keyboard HID pre-report hooks (run when a keyboard HID report is about to be sent)
-bool preKeyboardReport(hid::keyboard::Report& keyboard_report) {
-  if (! plugin::unshifter.preKeyboardReport(keyboard_report))
-    return false;
+bool preKeyboardReport(hid::keyboard::Report& /*keyboard_report*/) {
   return true;
 }
 
 /// Call keyboard HID post-report hooks (run after a keyboard HID report is sent)
-void postKeyboardReport(KeyEvent event) {
-  plugin::unshifter.postKeyboardReport(event);
+void postKeyboardReport(KeyEvent /*event*/) {
 }
 
 } // namespace hooks {

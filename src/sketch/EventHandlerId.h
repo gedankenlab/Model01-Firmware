@@ -15,9 +15,6 @@ enum class EventHandlerId : byte {
   // `controller` is special, and must always be present, but order is not important (at
   // least for onKeyswitchEvent):
   controller,
-  qukeys,
-  unshifter,
-  glukeys,
   macros,
   squeakeys,
 };

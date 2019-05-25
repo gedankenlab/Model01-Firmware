@@ -50,11 +50,7 @@ Qukey qukey_defs[] = {
   {glukeys::cGlukey::cancel, cKey::blank},
   {KK(LeftShift), KK(LeftParen)},
   {KK(RightShift), KK(RightParen)},
-  {Key_Spacebar, cKey::blank},
-
-  {Key_M, KeyboardKey(0x10, 0b0010)},
-  {Key_E, LayerKey{1, true}},
-  {Key_LeftShift, Key_Q},
+  {KK(Spacebar), cKey::blank},
 };
 
 } // namespace qukeys {
@@ -64,8 +60,10 @@ namespace unshifter {
 
 const PROGMEM
 Unkey unkey_defs[] = {
-  {Key_X, KeyboardKey(0x05, 0b0010)},
-  {KeyboardKey(0x06, 0b0010), Key_T},
+  {KK(LeftParen), KK(LeftCurlyBrace)},
+  {KK(RightParen), KK(RightCurlyBrace)},
+  {KK(LessThan), KK(LeftBracket)},
+  {KK(GreaterThan), KK(RightBracket)},
 };
 
 } // namespace unshifter {
